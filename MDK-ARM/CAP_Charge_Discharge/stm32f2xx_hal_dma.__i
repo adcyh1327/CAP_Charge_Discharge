@@ -1,0 +1,4 @@
+-c --cpu Cortex-M3 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I../Core/Inc -I../Drivers/STM32F2xx_HAL_Driver/Inc -I../Drivers/STM32F2xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I../Drivers/CMSIS/Device/ST/STM32F2xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Framework -I../Application --C99 
+-I D:\Keil_v4\ARM\RV31\INC 
+-I D:\Keil_v4\ARM\CMSIS\Include 
+-DUSE_HAL_DRIVER -DSTM32F207xx -o "CAP_Charge_Discharge\stm32f2xx_hal_dma.o" --depend "CAP_Charge_Discharge\stm32f2xx_hal_dma.d" "../Drivers/STM32F2xx_HAL_Driver/Src/stm32f2xx_hal_dma.c"
