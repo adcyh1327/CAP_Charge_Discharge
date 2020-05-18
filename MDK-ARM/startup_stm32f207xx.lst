@@ -663,10 +663,14 @@ ARM Macro Assembler    Page 11
   420 0000001C                 END
               00000000 
               00000000 
-Command Line: --debug --xref --cpu=Cortex-M3 --apcs=interwork --depend=CAP_Char
-ge_Discharge\startup_stm32f207xx.d -oCAP_Charge_Discharge\startup_stm32f207xx.o
- -I..\Core\Inc -ID:\Keil_v4\ARM\RV31\INC -ID:\Keil_v4\ARM\CMSIS\Include --prede
-fine="__MICROLIB SETA 1" --list=startup_stm32f207xx.lst startup_stm32f207xx.s
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
+ork --depend=cap_charge_discharge\startup_stm32f207xx.d -ocap_charge_discharge\
+startup_stm32f207xx.o -I..\Core\Inc -I.\RTE\_CAP_Charge_Discharge -ID:\software
+_cfg\Keil5_Pack\ARM\CMSIS\5.5.1\CMSIS\Core\Include -ID:\software_cfg\Keil5_Pack
+\Keil\STM32F2xx_DFP\2.9.0\Drivers\CMSIS\Device\ST\STM32F2xx\Include --predefine
+="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 528" --predefine="_RTE
+_ SETA 1" --predefine="STM32F207xx SETA 1" --list=startup_stm32f207xx.lst start
+up_stm32f207xx.s
 
 
 
@@ -1742,4 +1746,4 @@ Symbol: __main
       At line 176 in file startup_stm32f207xx.s
 Comment: __main used once
 2 symbols
-440 symbols in table
+443 symbols in table

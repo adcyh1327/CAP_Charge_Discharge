@@ -56,7 +56,7 @@ osThreadId ModbusPollHandle;
 osMessageQId Que_UartLCDHandle;
 osSemaphoreId BinarySem_rtuHandle;
 /* USER CODE BEGIN PV */
-static uint8_t RS485_BUF[SER_PDU_SIZE_MAX];
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

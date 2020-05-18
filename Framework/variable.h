@@ -1,5 +1,5 @@
-//#ifndef __VARIABLE_H_
-//#define __VARIABLE_H_
+#ifndef __VARIABLE_H_
+#define __VARIABLE_H_
 
 #include "stm32f2xx_hal.h"
 #include "config.h"
@@ -25,28 +25,18 @@ typedef union {
 }BitStatus;
 
 
-enum UsartType{//串口配置数组各元素的定义，有增加项时请在下边第一行往后增加
+enum UsartType{//串口配置数组各元素的定义，有增加项时在下边第一行往后增加
     EnUart=0,uartBaudrate,Databits,Chkbits,Stopbits,Flowctrl,uartDatatype,tmout,
     uartcfgnum
 };
 
-enum CANType{//CAN的配置数组各元素定义，有增加向时请在下边第一行往后增加
-    EnCAN=0,canBaudrate,LocalID,DeviceID,IDNum,canDatatype,
-    cancfgnum
-};
-
-enum DataType_t{//数据类型，有增加向时请在下边第一行往后增加
-    t_HEX=0,t_ASCII,t_BOOL,
-    t_typemax
-};
-extern char DataType[t_typemax][20];
 
 #define NUM_UARTCHANNEL               5  //串口总通道
 #define SCI_BUF_MAXLEN              256  //串口发送、接收缓冲区的最大长度,根据需要可能会变更
 
-enum USARTCAN_CHN{//串口和CAN的通道编号
-    RS232_1=0,RS485_1,RS485_2,RS485_3,RS485_4,CAN_CHN,
-    NUM_UARTCAN
+enum USART_CHN{//串口和CAN的通道编号
+    RS232_1=0,RS485_1,RS485_2,RS485_3,RS485_4,
+    NUM_UARTCHN
 };
 
 /*********************************************************************************************/   
@@ -60,7 +50,7 @@ typedef union {
 		uint8_t  bit5             :1;
 		uint8_t  bit6             :1;
 		uint8_t  en               :1;   //串口帧头或帧尾标志
-        uint16_t reserve          :8;   
+    uint16_t reserve          :8;   
 	} Bits;
 }Tdef_Prot;
 #define FrameStartEn                  0x80u  //帧头使能宏
@@ -88,14 +78,21 @@ struct ProtType_t
 extern const uint8_t auchCRC16_Hi[256];
 extern const uint8_t auchCRC16_Low[256];
 
+typedef struct UartOpFuncTyp
+{
+	void (*_send)  (uint8_t *sendbuf, uint16_t lenth);
+	void (*_recv)  (uint8_t channel, uint8_t data);
+}UartOpFunc_t;
+extern UartOpFunc_t UartOpFunc[NUM_UARTCHANNEL];
+
 typedef struct USARTCAN_Recv_info
 {
 	uint8_t newupd;//数据更新标志位
     uint16_t lenth; //字节数量
     uint8_t datatype;//数据类型
     uint8_t databuf[SCI_BUF_MAXLEN];//有效数据
-}USARTCAN_Recv_t;
-extern USARTCAN_Recv_t USARTCAN_Recv[NUM_UARTCAN];
+}USARTCHN_Recv_t;
+extern USARTCHN_Recv_t USARTCHN_Recv[NUM_UARTCHN];
 
 extern volatile BitStatus Keyboard_Status;
 #define CMD_Download_LocalCfg               Keyboard_Status.Bits.bit0
@@ -113,7 +110,7 @@ extern const uint16_t RS232_parity[3] ;
 extern const uint16_t RS232_FlowCntl[4] ;
 
 uint16_t Get_rtuCrc16(uint8_t *puchMsg,uint16_t usDataLen);
-USARTCAN_Recv_t GET_UsartCAN_Recv_Result(uint8_t chanel);
+USARTCHN_Recv_t GET_UsartCHN_Recv_Result(uint8_t chanel);
 unsigned char AscToHex(unsigned char aChar);
 unsigned char HexToAsc(unsigned char aHex);
 
@@ -122,6 +119,6 @@ float GET_ADC_Result(uint8_t chanel);
 
 
 
-//#endif
+#endif
 
 

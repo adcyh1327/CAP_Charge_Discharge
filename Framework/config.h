@@ -5,6 +5,17 @@
 #define SER_PDU_SIZE_MAX 500u
 
 
+
+#define OS_ENTER_CRITICAL() 								taskENTER_CRITICAL()
+#define OS_EXIT_CRITICAL() 									taskEXIT_CRITICAL()
+
+#define ON   														1u
+#define OFF 														0u
+
+#define TRUE  													1u
+#define FALSE 													0u
+
+
 #endif
 
 

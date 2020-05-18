@@ -1,12 +1,13 @@
-#include "stm32f2xx_hal.h"
 #include "variable.h"
 
-#if 1//__VARIABLE_H_
+#ifdef __VARIABLE_H_
+#include "stm32f2xx_hal.h"
 
-char platform_version[] = {"EquipmentController-V0.10 20190214"};
+
+
+char platform_version[] = {"CAP_Charge_Discharge-V0.10 20200518"};
 
 const  uint32_t   APPL_CRC __attribute__((at(APP_CRC_ADDR)))={0xA1A2A3A4};
-
 
 
 //CRC高位字节值表 
@@ -68,23 +69,14 @@ const uint8_t auchCRC16_Lo[256]={
 0x43, 0x83, 0x41, 0x81, 0x80, 0x40 
 };                          
 
-USARTCAN_Recv_t USARTCAN_Recv[NUM_UARTCAN];//串口或CAN的接收备份缓冲区，识别到有效帧后存取，可直接拷贝至以太网缓冲区
-
-// UART
-struct UART_Conf_Data uart_conf_data = {19200, 1,};
-
-char DataType[t_typemax][20]=//数据类型，主要用于MQTT的JSON串格式的数据
-{
-    {"t_HEX"},
-    {"t_ASCII"},
-    {"t_BOOL"},
-};
+USARTCHN_Recv_t USARTCHN_Recv[NUM_UARTCHN];//串口或CAN的接收备份缓冲区，识别到有效帧后存取，可直接拷贝至以太网缓冲区
+UartOpFunc_t UartOpFunc[NUM_UARTCHANNEL];
 
 volatile BitStatus Keyboard_Status;
 
-USARTCAN_Recv_t GET_UsartCAN_Recv_Result(uint8_t chanel)
+USARTCHN_Recv_t GET_UsartCHN_Recv_Result(uint8_t chanel)
 {
-    return USARTCAN_Recv[chanel];
+    return USARTCHN_Recv[chanel];
 }
 
 //======================================================================
