@@ -24,7 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "FM_Uart.h"
+#include "Task_MB_RTU_Master.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,8 +53,10 @@ DMA_HandleTypeDef hdma_uart5_tx;
 DMA_HandleTypeDef hdma_usart3_tx;
 
 osThreadId InitTaskHandle;
-osThreadId ModbusPollHandle;
+osThreadId ModbusMasterPolHandle;
+osThreadId UartHandleHandle;
 osMessageQId Que_UartLCDHandle;
+osMessageQId Que_UartExtDevHandle;
 osSemaphoreId BinarySem_rtuHandle;
 /* USER CODE BEGIN PV */
 
@@ -68,7 +71,8 @@ static void MX_USART3_UART_Init(void);
 static void MX_UART5_Init(void);
 static void MX_IWDG_Init(void);
 void StartInitTask(void const * argument);
-void StartTask_ModbusPoll(void const * argument);
+void Task_ModbusMasterPoll(void const * argument);
+void Task_UartHandle(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -139,18 +143,26 @@ int main(void)
   osMessageQDef(Que_UartLCD, 32, uint8_t);
   Que_UartLCDHandle = osMessageCreate(osMessageQ(Que_UartLCD), NULL);
 
+  /* definition and creation of Que_UartExtDev */
+  osMessageQDef(Que_UartExtDev, 8, uint8_t);
+  Que_UartExtDevHandle = osMessageCreate(osMessageQ(Que_UartExtDev), NULL);
+
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
   /* definition and creation of InitTask */
-  osThreadDef(InitTask, StartInitTask, osPriorityNormal, 0, 256);
+  osThreadDef(InitTask, StartInitTask, osPriorityNormal, 0, 128);
   InitTaskHandle = osThreadCreate(osThread(InitTask), NULL);
 
-  /* definition and creation of ModbusPoll */
-  osThreadDef(ModbusPoll, StartTask_ModbusPoll, osPriorityNormal, 0, 512);
-  ModbusPollHandle = osThreadCreate(osThread(ModbusPoll), NULL);
+  /* definition and creation of ModbusMasterPol */
+  osThreadDef(ModbusMasterPol, Task_ModbusMasterPoll, osPriorityNormal, 0, 256);
+  ModbusMasterPolHandle = osThreadCreate(osThread(ModbusMasterPol), NULL);
+
+  /* definition and creation of UartHandle */
+  osThreadDef(UartHandle, Task_UartHandle, osPriorityHigh, 0, 256);
+  UartHandleHandle = osThreadCreate(osThread(UartHandle), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -488,23 +500,41 @@ void StartInitTask(void const * argument)
   /* USER CODE END 5 */ 
 }
 
-/* USER CODE BEGIN Header_StartTask_ModbusPoll */
+/* USER CODE BEGIN Header_Task_ModbusMasterPoll */
 /**
-* @brief Function implementing the ModbusPoll thread.
+* @brief Function implementing the ModbusMasterPol thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_StartTask_ModbusPoll */
-void StartTask_ModbusPoll(void const * argument)
+/* USER CODE END Header_Task_ModbusMasterPoll */
+void Task_ModbusMasterPoll(void const * argument)
 {
-  /* USER CODE BEGIN StartTask_ModbusPoll */
-
+  /* USER CODE BEGIN Task_ModbusMasterPoll */
   /* Infinite loop */
   for(;;)
   {
     osDelay(1);
   }
-  /* USER CODE END StartTask_ModbusPoll */
+  /* USER CODE END Task_ModbusMasterPoll */
+}
+
+/* USER CODE BEGIN Header_Task_UartHandle */
+/**
+* @brief Function implementing the UartHandle thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_Task_UartHandle */
+void Task_UartHandle(void const * argument)
+{
+  /* USER CODE BEGIN Task_UartHandle */
+  /* Infinite loop */
+  for(;;)
+  {
+		FM_Usart_Init();
+    osDelay(1);
+  }
+  /* USER CODE END Task_UartHandle */
 }
 
 /**

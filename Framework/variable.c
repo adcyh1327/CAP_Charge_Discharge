@@ -5,7 +5,7 @@
 
 
 
-char platform_version[] = {"CAP_Charge_Discharge-V0.10 20200518"};
+char project_version[] = {"CAP_Charge_Discharge-V0.10 20200518"};
 
 const  uint32_t   APPL_CRC __attribute__((at(APP_CRC_ADDR)))={0xA1A2A3A4};
 
@@ -69,15 +69,10 @@ const uint8_t auchCRC16_Lo[256]={
 0x43, 0x83, 0x41, 0x81, 0x80, 0x40 
 };                          
 
-USARTCHN_Recv_t USARTCHN_Recv[NUM_UARTCHN];//串口或CAN的接收备份缓冲区，识别到有效帧后存取，可直接拷贝至以太网缓冲区
 UartOpFunc_t UartOpFunc[NUM_UARTCHANNEL];
 
-volatile BitStatus Keyboard_Status;
+volatile Tdef_Byte Keyboard_Status;
 
-USARTCHN_Recv_t GET_UsartCHN_Recv_Result(uint8_t chanel)
-{
-    return USARTCHN_Recv[chanel];
-}
 
 //======================================================================
 //获得CRC16值 

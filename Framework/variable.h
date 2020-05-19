@@ -22,7 +22,7 @@ typedef union {
         uint8_t  bit6              :1;
 				uint8_t  bit7              :1;
     }Bits;
-}BitStatus;
+}Tdef_Byte;
 
 
 enum UsartType{//串口配置数组各元素的定义，有增加项时在下边第一行往后增加
@@ -39,9 +39,6 @@ enum USART_CHN{//串口和CAN的通道编号
     NUM_UARTCHN
 };
 
-/*********************************************************************************************/   
-/*********************************************************************************************/ 
-/*********************************************************************************************/    
 typedef union {
   uint16_t T_byte;
   struct {
@@ -50,7 +47,7 @@ typedef union {
 		uint8_t  bit5             :1;
 		uint8_t  bit6             :1;
 		uint8_t  en               :1;   //串口帧头或帧尾标志
-    uint16_t reserve          :8;   
+    uint16_t reserve      :8;   
 	} Bits;
 }Tdef_Prot;
 #define FrameStartEn                  0x80u  //帧头使能宏
@@ -75,6 +72,8 @@ struct ProtType_t
     uint8_t inteval;           //字符间隔时间，单位100us
 };
 
+
+
 extern const uint8_t auchCRC16_Hi[256];
 extern const uint8_t auchCRC16_Low[256];
 
@@ -85,16 +84,9 @@ typedef struct UartOpFuncTyp
 }UartOpFunc_t;
 extern UartOpFunc_t UartOpFunc[NUM_UARTCHANNEL];
 
-typedef struct USARTCAN_Recv_info
-{
-	uint8_t newupd;//数据更新标志位
-    uint16_t lenth; //字节数量
-    uint8_t datatype;//数据类型
-    uint8_t databuf[SCI_BUF_MAXLEN];//有效数据
-}USARTCHN_Recv_t;
-extern USARTCHN_Recv_t USARTCHN_Recv[NUM_UARTCHN];
 
-extern volatile BitStatus Keyboard_Status;
+
+extern volatile Tdef_Byte Keyboard_Status;
 #define CMD_Download_LocalCfg               Keyboard_Status.Bits.bit0
 #define CMD_ParaDownload_Independent        Keyboard_Status.Bits.bit1
 
@@ -110,7 +102,6 @@ extern const uint16_t RS232_parity[3] ;
 extern const uint16_t RS232_FlowCntl[4] ;
 
 uint16_t Get_rtuCrc16(uint8_t *puchMsg,uint16_t usDataLen);
-USARTCHN_Recv_t GET_UsartCHN_Recv_Result(uint8_t chanel);
 unsigned char AscToHex(unsigned char aChar);
 unsigned char HexToAsc(unsigned char aHex);
 
