@@ -47,6 +47,8 @@ IWDG_HandleTypeDef hiwdg;
 
 SPI_HandleTypeDef hspi2;
 
+TIM_HandleTypeDef htim2;
+
 UART_HandleTypeDef huart5;
 UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_uart5_tx;
@@ -59,7 +61,7 @@ osMessageQId Que_UartLCDHandle;
 osMessageQId Que_UartExtDevHandle;
 osSemaphoreId BinarySem_rtuHandle;
 /* USER CODE BEGIN PV */
-
+uint8_t UartRecv[NUM_UARTCHANNEL];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,6 +72,7 @@ static void MX_SPI2_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_UART5_Init(void);
 static void MX_IWDG_Init(void);
+static void MX_TIM2_Init(void);
 void StartInitTask(void const * argument);
 void Task_ModbusMasterPoll(void const * argument);
 void Task_UartHandle(void const * argument);
@@ -117,6 +120,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_UART5_Init();
   MX_IWDG_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -290,6 +294,51 @@ static void MX_SPI2_Init(void)
 }
 
 /**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 7999;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 9999;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+
+}
+
+/**
   * @brief UART5 Initialization Function
   * @param None
   * @retval None
@@ -453,8 +502,23 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	if(huart->Instance == USART3)
 	{
 		//HAL_UART_Transmit_DMA(&huart3,UartRecv,1);	// 接收到数据马上使用串口1发送出去
-		//HAL_UART_Receive_IT(&huart3,(uint8_t *)UartRecv,1);//开启串口接收中断
+		UsartRecieveData(RS485_1,UartRecv[RS485_1]);
+		HAL_UART_Receive_IT(&huart3,(uint8_t *)UartRecv[RS485_1],1);//开启串口接收中断
 	}
+    else if(huart->Instance == USART3)
+	{
+        UsartRecieveData(RS485_2,UartRecv[RS485_2]);
+		HAL_UART_Receive_IT(&huart3,(uint8_t *)UartRecv[RS485_2],1);//开启串口接收中断
+	}
+    else if(huart->Instance == USART3)
+	{
+        UsartRecieveData(RS485_3,UartRecv[RS485_3]);
+		HAL_UART_Receive_IT(&huart3,(uint8_t *)UartRecv[RS485_3],1);//开启串口接收中断
+	}
+    else
+    {
+
+    }
 }
 
 /**
@@ -490,8 +554,8 @@ void SPI_ReadByte(uint8_t *buf, uint8_t size)
 void StartInitTask(void const * argument)
 {
   /* USER CODE BEGIN 5 */
-	//HAL_TIM_Base_Start_IT(&htim2);//开启定时器中断
-	//HAL_UART_Receive_IT(&huart3,(uint8_t *)UartRecv,1);//开启串口接收中断
+	HAL_TIM_Base_Start_IT(&htim2);//开启定时器中断
+	HAL_UART_Receive_IT(&huart3,(uint8_t *)UartRecv,1);//开启串口接收中断
   /* Infinite loop */
   for(;;)
   {
@@ -554,7 +618,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
-
+  if (htim->Instance == TIM2) {
+    USART_Timer100us();
+  }
   /* USER CODE END Callback 1 */
 }
 

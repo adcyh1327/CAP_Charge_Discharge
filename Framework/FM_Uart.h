@@ -41,6 +41,8 @@ void UART5_Send_Data(uint8_t *send_buff,uint16_t length);
 
 void FM_Usart_Init(void);
 void USART_Timer100us(void);
+void UsartRecieveData(uint8_t channel,uint8_t recdata);
+
 
 #endif
 
