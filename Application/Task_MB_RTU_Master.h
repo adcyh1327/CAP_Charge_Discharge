@@ -4,17 +4,17 @@
 #include <stdint.h>
 #include "t_list.h"
 #include "t_list_impl.h"
-#include "variable.h"
+#include "interface.h"
 
 #define RTU_SEND_LENGTH             120 * 2          //发送缓冲区大小
 #define RTU_RECE_LENGTH             120 * 2        //接受缓冲区大小
 
 //RTU通道配置
-#define UART_CHN_LCD_DISPLAY       						RS485_2
-#define UART_CHN_SAMPLE               				RS232_1
+#define UART_CHN_LCD_DISPLAY       						RS232_2
+#define UART_CHN_AD_SAMPLE               			RS232_1
 #define RTU_ENABLE_LIST \
 {\
-    FALSE,FALSE,TRUE,FALSE,FALSE \
+    FALSE,FALSE,TRUE,FALSE \
 }
 
 //RTU时间参数配置
@@ -23,7 +23,6 @@
 #define TIMER_PARAMETR_LIST \
 {\
     {1000,2000},\
-    {20,1000},\
     {20,1000},\
     {20,1000},\
     {20,1000},\
@@ -130,6 +129,6 @@ void RTU_Write(struct RTU_Ctx* _rtuctx);
 void RTU_CyclicTask(uint8_t chn);
 void UART_RTU_Recv(uint8_t chn,uint8_t     l_u8ReceData);
 void RTU_Timer1ms_Handler(void);
-void Task_MBRTU_Master(void *p_arg);
+void MBRTU_Master_MainFunction(void *p_arg);
 
 #endif

@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F207xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;        ../Drivers/STM32F2xx_HAL_Driver/Inc;        ../Drivers/STM32F2xx_HAL_Driver/Inc/Legacy;        ../Middlewares/Third_Party/FreeRTOS/Source/include;        ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;        ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3;        ../Drivers/CMSIS/Device/ST/STM32F2xx/Include;        ../Drivers/CMSIS/Include;        ../Framework;        ../Application</IncludePath>
+              <IncludePath>../Core/Inc;          ../Drivers/STM32F2xx_HAL_Driver/Inc;          ../Drivers/STM32F2xx_HAL_Driver/Inc/Legacy;          ../Middlewares/Third_Party/FreeRTOS/Source/include;          ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;          ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3;          ../Drivers/CMSIS/Device/ST/STM32F2xx/Include;          ../Drivers/CMSIS/Include;          ../Framework;          ../Application</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -578,19 +578,19 @@
           <GroupName>Framework</GroupName>
           <Files>
             <File>
-              <FileName>variable.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Framework\variable.h</FilePath>
-            </File>
-            <File>
-              <FileName>variable.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Framework\variable.c</FilePath>
-            </File>
-            <File>
               <FileName>FM_Uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Framework\FM_Uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>interface.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Framework\interface.c</FilePath>
+            </File>
+            <File>
+              <FileName>interface.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Framework\interface.h</FilePath>
             </File>
           </Files>
         </Group>

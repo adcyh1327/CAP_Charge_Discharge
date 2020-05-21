@@ -638,12 +638,12 @@
     <File>
       <GroupNumber>6</GroupNumber>
       <FileNumber>35</FileNumber>
-      <FileType>5</FileType>
+      <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Framework\variable.h</PathWithFileName>
-      <FilenameWithoutPath>variable.h</FilenameWithoutPath>
+      <PathWithFileName>..\Framework\FM_Uart.c</PathWithFileName>
+      <FilenameWithoutPath>FM_Uart.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -654,20 +654,20 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Framework\variable.c</PathWithFileName>
-      <FilenameWithoutPath>variable.c</FilenameWithoutPath>
+      <PathWithFileName>..\Framework\interface.c</PathWithFileName>
+      <FilenameWithoutPath>interface.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>6</GroupNumber>
       <FileNumber>37</FileNumber>
-      <FileType>1</FileType>
+      <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Framework\FM_Uart.c</PathWithFileName>
-      <FilenameWithoutPath>FM_Uart.c</FilenameWithoutPath>
+      <PathWithFileName>..\Framework\interface.h</PathWithFileName>
+      <FilenameWithoutPath>interface.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

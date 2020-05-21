@@ -80,6 +80,10 @@ void Error_Handler(void);
 #define LED2_GPIO_Port GPIOB
 #define SPI2_NSS_Pin GPIO_PIN_12
 #define SPI2_NSS_GPIO_Port GPIOB
+#define I2C_SDA_Pin GPIO_PIN_10
+#define I2C_SDA_GPIO_Port GPIOD
+#define I2C_SCL_Pin GPIO_PIN_11
+#define I2C_SCL_GPIO_Port GPIOD
 #define INPUT_4_Pin GPIO_PIN_12
 #define INPUT_4_GPIO_Port GPIOD
 #define INPUT_3_Pin GPIO_PIN_13

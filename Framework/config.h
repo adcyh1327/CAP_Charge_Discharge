@@ -15,6 +15,16 @@
 #define TRUE  													1u
 #define FALSE 													0u
 
+#define NUM_UARTCHANNEL               4  //串口总通道
+#define SCI_BUF_MAXLEN              256  //串口发送、接收缓冲区的最大长度,根据需要可能会变更
+
+enum USART_CHN{//串口和CAN的通道编号
+    RS485_1=0,RS232_1,RS232_2,RS232_3,
+    NUM_UARTCHN
+};
+
+
+
 
 #endif
 

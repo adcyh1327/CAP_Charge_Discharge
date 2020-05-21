@@ -12,11 +12,10 @@ struct Time_Parameter_t
 };
 struct Time_Parameter_t Time_Parameter[NUM_UARTCHANNEL] = TIMER_PARAMETR_LIST;
 
-
 struct RTU_Ctx rtu_ctx[NUM_UARTCHANNEL];//变量定义
 
 uint8_t RTU_CHN_ENABLE[NUM_UARTCHANNEL] = RTU_ENABLE_LIST;
-uint8_t RTU_Active[NUM_UARTCHANNEL]={OFF,OFF,OFF,OFF,OFF};
+uint8_t RTU_Active[NUM_UARTCHANNEL]={OFF,OFF,OFF,OFF};
 static uint16_t CommErrCnt[NUM_UARTCHANNEL]; //通讯错误计数器
 
 static volatile Tdef_Prot    	        	_RTUSystemStatus[NUM_UARTCHANNEL];
@@ -459,20 +458,16 @@ void RTU_CyclicTask(uint8_t chn)
 /*输入参数：无                                                                  */
 /*输出参数：无                                                                  */
 /*******************************************************************************/
-void Task_MBRTU_Master(void *p_arg)
+void MBRTU_Master_MainFunction(void *p_arg)
 {
-  uint8_t i;
-	
-	while(1)
-	{    	
-        for(i=0;i<NUM_UARTCHANNEL;i++)
+    uint8_t i;
+   	
+    for(i=0;i<NUM_UARTCHANNEL;i++)
+    {
+        if(RTU_CHN_ENABLE[i] == TRUE)
         {
-            if(RTU_CHN_ENABLE[i] == TRUE)
-            {
-        	    RTU_CyclicTask(i);
-            }
+            RTU_CyclicTask(i);
         }
-        //OSTimeDlyHMSM(0, 0, 0, 1);
-	}
+    }
 }
 

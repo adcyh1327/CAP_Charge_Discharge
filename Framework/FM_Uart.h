@@ -2,7 +2,7 @@
 #define __DR_UART_H
 
 #include "stm32f2xx_hal.h"
-#include "variable.h"
+#include "interface.h"
 
 typedef struct USARTCAN_Recv_info
 {
@@ -42,6 +42,10 @@ void UART5_Send_Data(uint8_t *send_buff,uint16_t length);
 void FM_Usart_Init(void);
 void USART_Timer100us(void);
 void UsartRecieveData(uint8_t channel,uint8_t recdata);
+void USART3_Send_Data(uint8_t *send_buff,uint16_t length);
+void UART5_Send_Data(uint8_t *send_buff,uint16_t length);
+
+
 
 
 #endif

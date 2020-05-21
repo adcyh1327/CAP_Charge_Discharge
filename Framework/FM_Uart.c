@@ -1,6 +1,7 @@
 #include "main.h" 
 #include "string.h"
 #include "FM_Uart.h"
+#include "cmsis_os.h"
 //#include "Task_MB_RTU_Master.h"
 
 volatile  Tdef_Byte                          _SystemFlag[NUM_UARTCHANNEL];
@@ -10,6 +11,13 @@ volatile  Tdef_Byte                          _SystemFlag[NUM_UARTCHANNEL];
 #define g_bit_SCIFramePreciseStart(n)        _SystemFlag[n].Bits.bit2    //
 #define g_bit_SCI_DMA_Send(n)                _SystemFlag[n].Bits.bit3    //DMA发送中标志
 
+extern osMessageQId Que_UartLCDHandle;
+extern osMessageQId Que_UartExtDevHandle;
+extern UART_HandleTypeDef huart5;
+extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef huart3;
+
 
 
 static uint16_t g_u16_SCISingalFrameRecTime[NUM_UARTCHANNEL];             //串口单帧数据接收时间计时，单位ms
@@ -18,7 +26,7 @@ static uint8_t l_u8_Receive_Buffer[NUM_UARTCHANNEL][SCI_BUF_MAXLEN];          //
 static uint16_t byteidx_faramend[NUM_UARTCHANNEL];//帧结束的字节序号
 static uint16_t l_DMA_SendTime[NUM_UARTCHANNEL];
 
-static USARTCHN_Recv_t USARTCAN_Recv[NUM_UARTCHANNEL];//串口或CAN的接收备份缓冲区，识别到有效帧后存取，可直接拷贝至以太网缓冲区
+static USARTCHN_Recv_t USARTCHN_Recv[NUM_UARTCHANNEL];//串口或CAN的接收备份缓冲区，识别到有效帧后存取，可直接拷贝至以太网缓冲区
 Interface_Info UsartCHN_Data;//
 
 enum Framestatus_t{
@@ -91,31 +99,31 @@ void CopyRecData(uint8_t channel)
 	if((UsartCHN_Data.UsartProt[channel].FrameStartInfo.T_byte & FrameStartEn) == FrameStartEn)
 	{
 		start = &l_u8_Receive_Buffer[channel][UsartCHN_Data.UsartProt[channel].FrameStartInfo.Bits.btn];
-		USARTCAN_Recv[channel].lenth = g_u16_Message_Length[channel] + 1 -UsartCHN_Data.UsartProt[channel].FrameStartInfo.Bits.btn;
+		USARTCHN_Recv[channel].lenth = g_u16_Message_Length[channel] + 1 -UsartCHN_Data.UsartProt[channel].FrameStartInfo.Bits.btn;
 	}
 	else
 	{
 		start = &l_u8_Receive_Buffer[channel][0];
-        USARTCAN_Recv[channel].lenth = g_u16_Message_Length[channel] + 1;
+        USARTCHN_Recv[channel].lenth = g_u16_Message_Length[channel] + 1;
 	}
 	if((UsartCHN_Data.UsartProt[channel].FrameStartInfo.T_byte & FrameEndEn) == FrameEndEn)
 	{
-		USARTCAN_Recv[channel].lenth = USARTCAN_Recv[channel].lenth - UsartCHN_Data.UsartProt[channel].FrameEndInfo.Bits.btn;
+		USARTCHN_Recv[channel].lenth = USARTCHN_Recv[channel].lenth - UsartCHN_Data.UsartProt[channel].FrameEndInfo.Bits.btn;
 	}
 	else if(UsartCHN_Data.UsartProt[channel].checksum == ChkSum_And)
 	{
-		USARTCAN_Recv[channel].lenth = USARTCAN_Recv[channel].lenth-2;
+		USARTCHN_Recv[channel].lenth = USARTCHN_Recv[channel].lenth-2;
 	}
 	else
 	{
-		USARTCAN_Recv[channel].lenth = g_u16_Message_Length[channel]+1;
+		USARTCHN_Recv[channel].lenth = g_u16_Message_Length[channel]+1;
 	}
 	//g_u16_SCISingalFrameRecTime[channel]=0;
-    USARTCAN_Recv[channel].datatype = UsartCHN_Data.Usart[channel][uartDatatype];
-    memcpy(USARTCAN_Recv[channel].databuf,start,USARTCAN_Recv[channel].lenth);
+    USARTCHN_Recv[channel].datatype = UsartCHN_Data.Usart[channel][uartDatatype];
+    memcpy(USARTCHN_Recv[channel].databuf,start,USARTCHN_Recv[channel].lenth);
     memset(l_u8_Receive_Buffer[channel],0,SCI_BUF_MAXLEN);
-    USARTCAN_Recv[channel].newupd=ON;
-    //OSMboxPost(mBOX_Uart_Recv[channel],(void *)&USARTCAN_Recv[channel].newupd);
+    USARTCHN_Recv[channel].newupd=ON;
+    //OSMboxPost(mBOX_Uart_Recv[channel],(void *)&USARTCHN_Recv[channel].newupd);
 }
 
 void UsartRecieveData(uint8_t channel,uint8_t recdata)
@@ -269,50 +277,15 @@ void UART5_IRQ(uint8_t data)/*  */
 
 
 
-#if 0
-void USART1_Send_Data(uint8_t *send_buff,uint16_t length)
-{
-    unsigned int i = 0;
-
-}
-
-void USART2_Send_Data(uint8_t *send_buff,uint16_t length)
-{
-	//USART2_485_TX_ENABLE;
-    //Delay_us(7);
-
-	//USART2_485_RX_ENABLE;
-
-}
-
 void USART3_Send_Data(uint8_t *send_buff,uint16_t length)
 {
-	USART3_485_TX_ENABLE;
-  Delay_us(7);
-	USART3_485_RX_ENABLE;
-
+	HAL_UART_Transmit_DMA(&huart3,send_buff,length);
 }
-
-void UART4_Send_Data(uint8_t *send_buff,uint16_t length)
-{
-    
-    UART4_485_TX_ENABLE;
-    //Delay_us(7);
-
-    UART4_485_RX_ENABLE;
-
-}
-
 void UART5_Send_Data(uint8_t *send_buff,uint16_t length)
 {
-	unsigned int i = 0;
-	UART5_485_TX_ENABLE;  	//485发送使能
-	//Delay_us(7);
-
-	UART5_485_RX_ENABLE;    	//485接收使能
+	HAL_UART_Transmit_DMA(&huart5,send_buff,length);
 }
 
-#endif
 
 
 void FM_Usart_Init(void)
