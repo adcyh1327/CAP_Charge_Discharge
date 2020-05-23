@@ -15,7 +15,7 @@
 #define RTU_ENABLE_LIST \
 {\
     FALSE,FALSE,TRUE,FALSE \
-}
+}//UART1 UART2 UART3 UART5
 
 //RTU时间参数配置
 //参数1：RTU周期发送请求帧的最小间隔时间
@@ -27,6 +27,7 @@
     {20,1000},\
     {20,1000},\
 }
+
 
 enum RTU_Add_Type_t
 {

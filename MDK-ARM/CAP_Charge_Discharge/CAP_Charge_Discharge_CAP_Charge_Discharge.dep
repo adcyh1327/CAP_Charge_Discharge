@@ -47,10 +47,10 @@ I (../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h)(0x5E6B96BB)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h)(0x5E6B96BB)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h)(0x5E6B96BB)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h)(0x5E6B96BB)
-I (../Framework/FM_Uart.h)(0x5EC6B088)
+I (../Framework/FM_Uart.h)(0x5EC7F460)
 I (../Framework/interface.h)(0x5EC6B15A)
-I (../Framework/config.h)(0x5EC6B59B)
-I (../Application/Task_MB_RTU_Master.h)(0x5EC6B6EF)
+I (../Framework/config.h)(0x5EC7E861)
+I (../Application/Task_MB_RTU_Master.h)(0x5EC7EC9F)
 I (../Framework/t_list.h)(0x59A7A1A2)
 I (../Framework/t_list_impl.h)(0x59A7A1A2)
 F (../Core/Src/freertos.c)(0x5EC6B662)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F2xx_HAL_Driver/Inc -I ../Drivers/STM32F2xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F2xx/Include -I ../Drivers/CMSIS/Include -I ../Framework -I ../Application-I.\RTE\_CAP_Charge_Discharge-ID:\software_cfg\Keil5_Pack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\software_cfg\Keil5_Pack\Keil\STM32F2xx_DFP\2.9.0\Drivers\CMSIS\Device\ST\STM32F2xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F207xx -DUSE_HAL_DRIVER -DSTM32F207xx-o cap_charge_discharge\freertos.o --depend cap_charge_discharge\freertos.d)
@@ -923,7 +923,7 @@ I (../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3/portmacro.h)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h)(0x5E6B96BB)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/task.h)(0x5E6B96BB)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/list.h)(0x5E6B96BB)
-F (..\Framework\FM_Uart.c)(0x5EC6B68A)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F2xx_HAL_Driver/Inc -I ../Drivers/STM32F2xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F2xx/Include -I ../Drivers/CMSIS/Include -I ../Framework -I ../Application-I.\RTE\_CAP_Charge_Discharge-ID:\software_cfg\Keil5_Pack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\software_cfg\Keil5_Pack\Keil\STM32F2xx_DFP\2.9.0\Drivers\CMSIS\Device\ST\STM32F2xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F207xx -DUSE_HAL_DRIVER -DSTM32F207xx-o cap_charge_discharge\fm_uart.o --depend cap_charge_discharge\fm_uart.d)
+F (..\Framework\FM_Uart.c)(0x5EC9282B)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F2xx_HAL_Driver/Inc -I ../Drivers/STM32F2xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F2xx/Include -I ../Drivers/CMSIS/Include -I ../Framework -I ../Application-I.\RTE\_CAP_Charge_Discharge-ID:\software_cfg\Keil5_Pack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\software_cfg\Keil5_Pack\Keil\STM32F2xx_DFP\2.9.0\Drivers\CMSIS\Device\ST\STM32F2xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F207xx -DUSE_HAL_DRIVER -DSTM32F207xx-o cap_charge_discharge\fm_uart.o --depend cap_charge_discharge\fm_uart.d)
 I (../Core/Inc/main.h)(0x5EC6B663)
 I (../Drivers/STM32F2xx_HAL_Driver/Inc/stm32f2xx_hal.h)(0x5E6B96B9)
 I (../Core/Inc/stm32f2xx_hal_conf.h)(0x5EC6B663)
@@ -957,9 +957,9 @@ I (../Drivers/STM32F2xx_HAL_Driver/Inc/stm32f2xx_hal_tim.h)(0x5E6B96B9)
 I (../Drivers/STM32F2xx_HAL_Driver/Inc/stm32f2xx_hal_tim_ex.h)(0x5E6B96B9)
 I (../Drivers/STM32F2xx_HAL_Driver/Inc/stm32f2xx_hal_uart.h)(0x5E6B96B9)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x5CEB79E2)
-I (..\Framework\FM_Uart.h)(0x5EC6B088)
+I (..\Framework\FM_Uart.h)(0x5EC7F460)
 I (..\Framework\interface.h)(0x5EC6B15A)
-I (..\Framework\config.h)(0x5EC6B59B)
+I (..\Framework\config.h)(0x5EC7E861)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h)(0x5E6B96BB)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h)(0x5E6B96BB)
 I (../Core/Inc/FreeRTOSConfig.h)(0x5EC6B662)
@@ -1007,8 +1007,8 @@ I (../Drivers/STM32F2xx_HAL_Driver/Inc/stm32f2xx_hal_spi.h)(0x5E6B96B9)
 I (../Drivers/STM32F2xx_HAL_Driver/Inc/stm32f2xx_hal_tim.h)(0x5E6B96B9)
 I (../Drivers/STM32F2xx_HAL_Driver/Inc/stm32f2xx_hal_tim_ex.h)(0x5E6B96B9)
 I (../Drivers/STM32F2xx_HAL_Driver/Inc/stm32f2xx_hal_uart.h)(0x5E6B96B9)
-I (..\Framework\config.h)(0x5EC6B59B)
-I (..\Framework\FM_Uart.h)(0x5EC6B088)
+I (..\Framework\config.h)(0x5EC7E861)
+I (..\Framework\FM_Uart.h)(0x5EC7F460)
 F (..\Framework\interface.h)(0x5EC6B15A)()
 F (..\Application\Task_MB_RTU_Master.c)(0x5EC6B6E7)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F2xx_HAL_Driver/Inc -I ../Drivers/STM32F2xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3 -I ../Drivers/CMSIS/Device/ST/STM32F2xx/Include -I ../Drivers/CMSIS/Include -I ../Framework -I ../Application-I.\RTE\_CAP_Charge_Discharge-ID:\software_cfg\Keil5_Pack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\software_cfg\Keil5_Pack\Keil\STM32F2xx_DFP\2.9.0\Drivers\CMSIS\Device\ST\STM32F2xx\Include-D__UVISION_VERSION="528" -D_RTE_ -DSTM32F207xx -DUSE_HAL_DRIVER -DSTM32F207xx-o cap_charge_discharge\task_mb_rtu_master.o --depend cap_charge_discharge\task_mb_rtu_master.d)
 I (../Core/Inc/main.h)(0x5EC6B663)
@@ -1058,8 +1058,8 @@ I (../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h)(0x5E6B96BB)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h)(0x5E6B96BB)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h)(0x5E6B96BB)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x5CEB79E2)
-I (..\Application\Task_MB_RTU_Master.h)(0x5EC6B6EF)
+I (..\Application\Task_MB_RTU_Master.h)(0x5EC7EC9F)
 I (../Framework/t_list.h)(0x59A7A1A2)
 I (../Framework/t_list_impl.h)(0x59A7A1A2)
 I (../Framework/interface.h)(0x5EC6B15A)
-I (../Framework/config.h)(0x5EC6B59B)
+I (../Framework/config.h)(0x5EC7E861)

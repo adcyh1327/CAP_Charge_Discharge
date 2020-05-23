@@ -4,11 +4,12 @@
 #include "stm32f2xx_hal.h"
 #include "interface.h"
 
+#define QUE_WAIT_TIME                    50u
+
 typedef struct USARTCAN_Recv_info
 {
 		uint8_t newupd;//数据更新标志位
     uint16_t lenth; //字节数量
-    uint8_t datatype;//数据类型
     uint8_t databuf[SCI_BUF_MAXLEN];//有效数据
 }USARTCHN_Recv_t;
 extern USARTCHN_Recv_t USARTCHN_Recv[NUM_UARTCHN];

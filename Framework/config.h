@@ -21,7 +21,7 @@
 enum USART_CHN{//串口和CAN的通道编号
     RS485_1=0,RS232_1,RS232_2,RS232_3,
     NUM_UARTCHN
-};
+};//UART1 UART2 UART3 UART5
 
 
 

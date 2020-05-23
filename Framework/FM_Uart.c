@@ -19,7 +19,7 @@ extern UART_HandleTypeDef huart2;
 extern UART_HandleTypeDef huart3;
 
 
-
+static osMessageQId* Que_UartID[NUM_UARTCHANNEL] = {&Que_UartLCDHandle,&Que_UartExtDevHandle};
 static uint16_t g_u16_SCISingalFrameRecTime[NUM_UARTCHANNEL];             //串口单帧数据接收时间计时，单位ms
 static uint16_t g_u16_Message_Length[NUM_UARTCHANNEL];                     //当前已接收到的数据个数
 static uint8_t l_u8_Receive_Buffer[NUM_UARTCHANNEL][SCI_BUF_MAXLEN];          //用于保存串口接收到的数据
@@ -119,11 +119,11 @@ void CopyRecData(uint8_t channel)
 		USARTCHN_Recv[channel].lenth = g_u16_Message_Length[channel]+1;
 	}
 	//g_u16_SCISingalFrameRecTime[channel]=0;
-    USARTCHN_Recv[channel].datatype = UsartCHN_Data.Usart[channel][uartDatatype];
     memcpy(USARTCHN_Recv[channel].databuf,start,USARTCHN_Recv[channel].lenth);
     memset(l_u8_Receive_Buffer[channel],0,SCI_BUF_MAXLEN);
     USARTCHN_Recv[channel].newupd=ON;
     //OSMboxPost(mBOX_Uart_Recv[channel],(void *)&USARTCHN_Recv[channel].newupd);
+    xQueueSend(*Que_UartID[channel], (const void *)&USARTCHN_Recv[channel] , QUE_WAIT_TIME);
 }
 
 void UsartRecieveData(uint8_t channel,uint8_t recdata)
@@ -182,9 +182,9 @@ void UsartRecieveData(uint8_t channel,uint8_t recdata)
     else if(FrameStatus[channel] == frame_data)
     {
         g_u16_Message_Length[channel]++;
-		l_u8_Receive_Buffer[channel][g_u16_Message_Length[channel]] = Temp;
+		    l_u8_Receive_Buffer[channel][g_u16_Message_Length[channel]] = Temp;
         if((UsartCHN_Data.UsartProt[channel].FrameEndInfo.T_byte & FrameEndEn) == FrameEndEn)
-		{
+		    {
             if(Temp==UsartCHN_Data.UsartProt[channel].FrameEnd[0])
 			{
                 if(UsartCHN_Data.UsartProt[channel].FrameEndInfo.Bits.btn==byte_1)
