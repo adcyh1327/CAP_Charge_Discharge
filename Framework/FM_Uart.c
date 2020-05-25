@@ -17,7 +17,7 @@ extern UART_HandleTypeDef huart5;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 extern UART_HandleTypeDef huart3;
-
+extern UART_HandleTypeDef huart6;
 
 static osMessageQId* Que_UartID[NUM_UARTCHANNEL] = {&Que_UartLCDHandle,&Que_UartExtDevHandle};
 static uint16_t g_u16_SCISingalFrameRecTime[NUM_UARTCHANNEL];             //串口单帧数据接收时间计时，单位ms
@@ -242,48 +242,31 @@ void UsartRecieveData(uint8_t channel,uint8_t recdata)
     g_u16_SCISingalFrameRecTime[channel]=0;
 }
 
-#if 0
-void USART1_IRQ(uint8_t data)/*  */
+
+void USART1_Send_Data(uint8_t *send_buff,uint16_t length)
 {
-    UsartRecieveData(RS232_1,data);
-	USART1_RecieveData(data);
+  USART1_485_TX_ENABLE;
+	HAL_UART_Transmit_DMA(&huart1,send_buff,length);
+	//HAL_UART_Transmit(&huart1,send_buff,length,1000);
 }
-
-void USART2_IRQ(uint8_t data)/*  */
+void USART2_Send_Data(uint8_t *send_buff,uint16_t length)
 {
-    UsartRecieveData(RS485_2,data);
-	USART3_RecieveData(data);
+	HAL_UART_Transmit_DMA(&huart2,send_buff,length);
 }
-
-void USART3_IRQ(uint8_t data)/*  */
-{
-    UsartRecieveData(RS485_1,data);
-	USART2_RecieveData(data);
-}
-
-void UART4_IRQ(uint8_t data)/*  */
-{
-    UsartRecieveData(RS485_3,data);
-	UART4_RecieveData(data);
-}
-
-void UART5_IRQ(uint8_t data)/*  */
-{
-    UsartRecieveData(RS485_4,data);
-	UART5_RecieveData(data);
-}
-#endif
-
-
-
-
 void USART3_Send_Data(uint8_t *send_buff,uint16_t length)
 {
 	HAL_UART_Transmit_DMA(&huart3,send_buff,length);
+  //HAL_UART_Transmit(&huart3,send_buff,length,1000);
 }
 void UART5_Send_Data(uint8_t *send_buff,uint16_t length)
 {
+  UART5_485_TX_ENABLE;
 	HAL_UART_Transmit_DMA(&huart5,send_buff,length);
+}
+void USART6_Send_Data(uint8_t *send_buff,uint16_t length)
+{
+	HAL_UART_Transmit_DMA(&huart6,send_buff,length);
+  //HAL_UART_Transmit(&huart6,send_buff,length,1000);
 }
 
 

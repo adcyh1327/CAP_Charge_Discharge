@@ -1,9 +1,42 @@
 #ifndef __CONFIG_H_
 #define __CONFIG_H_
 
-#define APP_CRC_ADDR   0x308000
-#define SER_PDU_SIZE_MAX 500u
+#include "main.h"
 
+#define APP_CRC_ADDR   0x308000
+
+enum USART_CHN{//´®¿ÚÍ¨µÀ
+    USART_1=0,USART_2,USART_3,UART_5,USART_6,
+    NUM_UARTCHN
+};//UART1 UART2 UART3 UART5 UART6
+
+#define NUM_UARTCHANNEL               5  //´®¿ÚÍ¨µÀ×ÜÊýÁ¿
+#define SCI_BUF_MAXLEN              256  //´®¿Ú½ÓÊÕ»º³åÇø×î´ó×Ö½ÚÊýÁ¿
+
+/******************************************************************************************/
+#define LED2_ON                         HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin,GPIO_PIN_RESET);
+#define LED2_OFF                        HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin,GPIO_PIN_SET);
+#define LED3_ON                         HAL_GPIO_WritePin(LED3_GPIO_Port,LED3_Pin,GPIO_PIN_RESET);
+#define LED3_OFF                        HAL_GPIO_WritePin(LED3_GPIO_Port,LED3_Pin,GPIO_PIN_SET);
+
+#define USART1_485_TX_ENABLE            HAL_GPIO_WritePin(USART1_485_EN_GPIO_Port,USART1_485_EN_Pin,GPIO_PIN_SET);
+#define USART1_485_RX_ENABLE            HAL_GPIO_WritePin(USART1_485_EN_GPIO_Port,USART1_485_EN_Pin,GPIO_PIN_RESET);
+#define UART5_485_TX_ENABLE             HAL_GPIO_WritePin(UART5_485_EN_GPIO_Port,UART5_485_EN_Pin,GPIO_PIN_SET);
+#define UART5_485_RX_ENABLE             HAL_GPIO_WritePin(UART5_485_EN_GPIO_Port,UART5_485_EN_Pin,GPIO_PIN_RESET);
+
+
+//RTUÍ¨µÀÅäÖÃ
+#define UART_CHN_POWER_CTRL       						USART_3
+#define UART_CHN_AD_SAMPLE               			USART_3
+#define RTU_ENABLE_LIST \
+{\
+    FALSE,FALSE,TRUE,FALSE,FALSE \
+}//UART1 UART2 UART3 UART5 UART6
+
+
+
+
+/******************************************************************************************/
 
 
 #define OS_ENTER_CRITICAL() 								taskENTER_CRITICAL()
@@ -14,16 +47,6 @@
 
 #define TRUE  													1u
 #define FALSE 													0u
-
-#define NUM_UARTCHANNEL               4  //ä¸²å£æ€»é€šé“
-#define SCI_BUF_MAXLEN              256  //ä¸²å£å‘é€ã€æŽ¥æ”¶ç¼“å†²åŒºçš„æœ€å¤§é•¿åº¦,æ ¹æ®éœ€è¦å¯èƒ½ä¼šå˜æ›´
-
-enum USART_CHN{//ä¸²å£å’ŒCANçš„é€šé“ç¼–å·
-    RS485_1=0,RS232_1,RS232_2,RS232_3,
-    NUM_UARTCHN
-};//UART1 UART2 UART3 UART5
-
-
 
 
 #endif

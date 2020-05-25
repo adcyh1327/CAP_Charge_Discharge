@@ -9,13 +9,6 @@
 #define RTU_SEND_LENGTH             120 * 2          //发送缓冲区大小
 #define RTU_RECE_LENGTH             120 * 2        //接受缓冲区大小
 
-//RTU通道配置
-#define UART_CHN_LCD_DISPLAY       						RS232_2
-#define UART_CHN_AD_SAMPLE               			RS232_1
-#define RTU_ENABLE_LIST \
-{\
-    FALSE,FALSE,TRUE,FALSE \
-}//UART1 UART2 UART3 UART5
 
 //RTU时间参数配置
 //参数1：RTU周期发送请求帧的最小间隔时间
@@ -26,7 +19,8 @@
     {20,1000},\
     {20,1000},\
     {20,1000},\
-}
+    {20,1000},\
+}//UART1 UART2 UART3 UART5 UART6
 
 
 enum RTU_Add_Type_t

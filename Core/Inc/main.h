@@ -92,8 +92,10 @@ void Error_Handler(void);
 #define INPUT_2_GPIO_Port GPIOD
 #define INPUT_1_Pin GPIO_PIN_15
 #define INPUT_1_GPIO_Port GPIOD
-#define LCD_485_EN_Pin GPIO_PIN_0
-#define LCD_485_EN_GPIO_Port GPIOD
+#define UART5_485_EN_Pin GPIO_PIN_0
+#define UART5_485_EN_GPIO_Port GPIOD
+#define USART1_485_EN_Pin GPIO_PIN_8
+#define USART1_485_EN_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

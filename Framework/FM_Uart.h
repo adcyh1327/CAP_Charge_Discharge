@@ -12,7 +12,7 @@ typedef struct USARTCAN_Recv_info
     uint16_t lenth; //字节数量
     uint8_t databuf[SCI_BUF_MAXLEN];//有效数据
 }USARTCHN_Recv_t;
-extern USARTCHN_Recv_t USARTCHN_Recv[NUM_UARTCHN];
+//extern USARTCHN_Recv_t USARTCHN_Recv[NUM_UARTCHN];
 
 typedef struct Interface_Info_t
 {
@@ -43,9 +43,11 @@ void UART5_Send_Data(uint8_t *send_buff,uint16_t length);
 void FM_Usart_Init(void);
 void USART_Timer100us(void);
 void UsartRecieveData(uint8_t channel,uint8_t recdata);
+void USART1_Send_Data(uint8_t *send_buff,uint16_t length);
+void USART2_Send_Data(uint8_t *send_buff,uint16_t length);
 void USART3_Send_Data(uint8_t *send_buff,uint16_t length);
 void UART5_Send_Data(uint8_t *send_buff,uint16_t length);
-
+void USART6_Send_Data(uint8_t *send_buff,uint16_t length);
 
 
 

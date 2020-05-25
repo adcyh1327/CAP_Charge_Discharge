@@ -53,10 +53,12 @@ UART_HandleTypeDef huart5;
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
+UART_HandleTypeDef huart6;
 DMA_HandleTypeDef hdma_uart5_tx;
 DMA_HandleTypeDef hdma_usart1_tx;
 DMA_HandleTypeDef hdma_usart2_tx;
 DMA_HandleTypeDef hdma_usart3_tx;
+DMA_HandleTypeDef hdma_usart6_tx;
 
 osThreadId InitTaskHandle;
 osThreadId ModbusMasterPolHandle;
@@ -79,6 +81,7 @@ static void MX_IWDG_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_USART6_UART_Init(void);
 void StartInitTask(void const * argument);
 void Task_ModbusMasterPoll(void const * argument);
 void Task_UartHandle(void const * argument);
@@ -129,6 +132,7 @@ int main(void)
   MX_TIM2_Init();
   MX_USART2_UART_Init();
   MX_USART1_UART_Init();
+  MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -320,9 +324,9 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 7999;
+  htim2.Init.Prescaler = 39;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 9999;
+  htim2.Init.Period = 999;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -478,6 +482,39 @@ static void MX_USART3_UART_Init(void)
 
 }
 
+/**
+  * @brief USART6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART6_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART6_Init 0 */
+
+  /* USER CODE END USART6_Init 0 */
+
+  /* USER CODE BEGIN USART6_Init 1 */
+
+  /* USER CODE END USART6_Init 1 */
+  huart6.Instance = USART6;
+  huart6.Init.BaudRate = 115200;
+  huart6.Init.WordLength = UART_WORDLENGTH_8B;
+  huart6.Init.StopBits = UART_STOPBITS_1;
+  huart6.Init.Parity = UART_PARITY_NONE;
+  huart6.Init.Mode = UART_MODE_TX_RX;
+  huart6.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart6.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART6_Init 2 */
+
+  /* USER CODE END USART6_Init 2 */
+
+}
+
 /** 
   * Enable DMA controller clock
   */
@@ -498,6 +535,9 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream7_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream7_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream7_IRQn);
+  /* DMA2_Stream6_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream6_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream6_IRQn);
   /* DMA2_Stream7_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
@@ -528,10 +568,10 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(CS1_5541_GPIO_Port, CS1_5541_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, CLK_5541_Pin|LED3_Pin|LED2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, CLK_5541_Pin|LED3_Pin|LED2_Pin|USART1_485_EN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, I2C_SDA_Pin|I2C_SCL_Pin|LCD_485_EN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, I2C_SDA_Pin|I2C_SCL_Pin|UART5_485_EN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : RELAY_1_Pin RELAY_2_Pin RELAY_3_Pin RELAY_4_Pin 
                            RELAY_5_Pin DIN_5541_Pin */
@@ -549,8 +589,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(CS1_5541_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : CLK_5541_Pin LED3_Pin LED2_Pin */
-  GPIO_InitStruct.Pin = CLK_5541_Pin|LED3_Pin|LED2_Pin;
+  /*Configure GPIO pins : CLK_5541_Pin LED3_Pin LED2_Pin USART1_485_EN_Pin */
+  GPIO_InitStruct.Pin = CLK_5541_Pin|LED3_Pin|LED2_Pin|USART1_485_EN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -562,8 +602,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(SPI2_NSS_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : I2C_SDA_Pin I2C_SCL_Pin LCD_485_EN_Pin */
-  GPIO_InitStruct.Pin = I2C_SDA_Pin|I2C_SCL_Pin|LCD_485_EN_Pin;
+  /*Configure GPIO pins : I2C_SDA_Pin I2C_SCL_Pin UART5_485_EN_Pin */
+  GPIO_InitStruct.Pin = I2C_SDA_Pin|I2C_SCL_Pin|UART5_485_EN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -580,27 +620,54 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	if(huart->Instance == USART3)
+	if(huart->Instance == USART1)
 	{
 		//HAL_UART_Transmit_DMA(&huart3,UartRecv,1);	// 接收到数据马上使用串口1发送出去
-		UsartRecieveData(RS485_1,UartRecv[RS485_1]);
-		HAL_UART_Receive_IT(&huart3,(uint8_t *)UartRecv[RS485_1],1);//开启串口接收中断
+		UsartRecieveData(USART_1,UartRecv[USART_1]);
+		HAL_UART_Receive_IT(&huart1,(uint8_t *)&UartRecv[USART_1],1);//开启串口接收中断
 	}
-    else if(huart->Instance == USART3)
+  else if(huart->Instance == USART2)
 	{
-        UsartRecieveData(RS232_2,UartRecv[RS232_2]);
-		HAL_UART_Receive_IT(&huart3,(uint8_t *)UartRecv[RS232_2],1);//开启串口接收中断
+    UsartRecieveData(USART_2,UartRecv[USART_2]);
+		HAL_UART_Receive_IT(&huart2,(uint8_t *)&UartRecv[USART_2],1);//开启串口接收中断
 	}
-    else if(huart->Instance == USART3)
+  else if(huart->Instance == USART3)
 	{
-        UsartRecieveData(RS232_3,UartRecv[RS232_3]);
-		HAL_UART_Receive_IT(&huart3,(uint8_t *)UartRecv[RS232_3],1);//开启串口接收中断
+    UsartRecieveData(USART_3,UartRecv[USART_3]);
+		HAL_UART_Receive_IT(&huart3,(uint8_t *)&UartRecv[USART_3],1);//开启串口接收中断
 	}
-    else
-    {
+  else if(huart->Instance == UART5)
+	{
+    UsartRecieveData(UART_5,UartRecv[UART_5]);
+		HAL_UART_Receive_IT(&huart5,(uint8_t *)&UartRecv[UART_5],1);//开启串口接收中断
+	}
+  else if(huart->Instance == USART6)
+	{
+    UsartRecieveData(USART_6,UartRecv[USART_6]);
+		HAL_UART_Receive_IT(&huart6,(uint8_t *)&UartRecv[USART_6],1);//开启串口接收中断
+	}
+  else
+  {
 
-    }
+  }
 }
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if(huart->Instance == USART1)
+	{
+		USART1_485_RX_ENABLE;
+	}
+  else if(huart->Instance == UART5)
+	{
+    UART5_485_RX_ENABLE;
+	}
+  else
+  {
+
+  }
+}
+
 
 /**
   * @brief  写1字节数据到SPI总线
@@ -636,11 +703,19 @@ void StartInitTask(void const * argument)
 {
   /* USER CODE BEGIN 5 */
 	HAL_TIM_Base_Start_IT(&htim2);//开启定时器中断
-	HAL_UART_Receive_IT(&huart3,(uint8_t *)UartRecv,1);//开启串口接收中断
+	HAL_UART_Receive_IT(&huart1,(uint8_t *)&UartRecv[USART_1],1);//开启串口接收中断
+	HAL_UART_Receive_IT(&huart2,(uint8_t *)&UartRecv[USART_2],1);//开启串口接收中断
+	HAL_UART_Receive_IT(&huart3,(uint8_t *)&UartRecv[USART_3],1);//开启串口接收中断
+	HAL_UART_Receive_IT(&huart5,(uint8_t *)&UartRecv[UART_5],1);//开启串口接收中断
+	HAL_UART_Receive_IT(&huart6,(uint8_t *)&UartRecv[USART_6],1);//开启串口接收中断
+	FM_Usart_Init();
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    LED3_ON;
+    osDelay(200);
+    LED3_OFF;
+    osDelay(200);
   }
   /* USER CODE END 5 */ 
 }
@@ -655,6 +730,7 @@ void StartInitTask(void const * argument)
 void Task_ModbusMasterPoll(void const * argument)
 {
   /* USER CODE BEGIN Task_ModbusMasterPoll */
+  Platform_Init();
   /* Infinite loop */
   for(;;)
   {
@@ -694,7 +770,7 @@ void Task_UartHandle(void const * argument)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
-
+static uint16_t cnt =0;
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM14) {
     HAL_IncTick();
@@ -702,6 +778,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 1 */
   if (htim->Instance == TIM2) {
     USART_Timer100us();
+    cnt++;
+    if(cnt>=10)
+    {
+      cnt=0;
+      RTU_Timer1ms_Handler();
+      HAL_GPIO_TogglePin(LED2_GPIO_Port,LED2_Pin);
+    }
   }
   /* USER CODE END Callback 1 */
 }

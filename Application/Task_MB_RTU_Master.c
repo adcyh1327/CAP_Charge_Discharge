@@ -1,9 +1,10 @@
-#include "main.h"
+#include "config.h"
 #include "cmsis_os.h"
 #include "stm32f2xx.h"                  // Device header
 #include "string.h"
 #include "Task_MB_RTU_Master.h"
 
+extern uint8_t RTU_CHN_ENABLE[NUM_UARTCHANNEL];
 
 struct Time_Parameter_t
 {
@@ -14,8 +15,7 @@ struct Time_Parameter_t Time_Parameter[NUM_UARTCHANNEL] = TIMER_PARAMETR_LIST;
 
 struct RTU_Ctx rtu_ctx[NUM_UARTCHANNEL];//变量定义
 
-uint8_t RTU_CHN_ENABLE[NUM_UARTCHANNEL] = RTU_ENABLE_LIST;
-uint8_t RTU_Active[NUM_UARTCHANNEL]={OFF,OFF,OFF,OFF};
+uint8_t RTU_Active[NUM_UARTCHANNEL]={OFF,OFF,OFF,OFF,OFF};
 static uint16_t CommErrCnt[NUM_UARTCHANNEL]; //通讯错误计数器
 
 static volatile Tdef_Prot    	        	_RTUSystemStatus[NUM_UARTCHANNEL];
@@ -146,13 +146,6 @@ void RTU_Init(uint8_t chn)
 	rtu_ctx[chn].Pollevent = EV_NONE;
 	UartOpFunc[chn]._recv=UART_RTU_Recv;
 	memset(CommErrCnt,0,NUM_UARTCHANNEL);
-	for(i=0;i<NUM_UARTCHANNEL;i++)
-	{
-			if(RTU_CHN_ENABLE[i] == TRUE)
-			{
-					RTU_Init(i);//第一个参数表示发送间隔时间，第二个参数表示超时时间
-			}
-	}
 }
 
 /********************************************************************************/
