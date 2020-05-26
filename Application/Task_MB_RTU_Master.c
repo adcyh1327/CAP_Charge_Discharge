@@ -5,7 +5,6 @@
 #include "Task_MB_RTU_Master.h"
 
 extern uint8_t RTU_CHN_ENABLE[NUM_UARTCHANNEL];
-
 struct Time_Parameter_t
 {
     uint16_t interval;

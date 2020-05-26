@@ -26,11 +26,11 @@ enum USART_CHN{//串口通道
 
 
 //RTU通道配置
-#define UART_CHN_POWER_CTRL       						USART_3
+#define UART_CHN_POWER_CTRL       						USART_1
 #define UART_CHN_AD_SAMPLE               			USART_3
 #define RTU_ENABLE_LIST \
 {\
-    FALSE,FALSE,TRUE,FALSE,FALSE \
+    TRUE,FALSE,TRUE,FALSE,FALSE \
 }//UART1 UART2 UART3 UART5 UART6
 
 

@@ -255,8 +255,8 @@ static void MX_IWDG_Init(void)
 
   /* USER CODE END IWDG_Init 1 */
   hiwdg.Instance = IWDG;
-  hiwdg.Init.Prescaler = IWDG_PRESCALER_64;
-  hiwdg.Init.Reload = 1250;
+  hiwdg.Init.Prescaler = IWDG_PRESCALER_32;
+  hiwdg.Init.Reload = 1000;
   if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
   {
     Error_Handler();
@@ -324,9 +324,9 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 39;
+  htim2.Init.Prescaler = 19;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 999;
+  htim2.Init.Period = 99;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -716,6 +716,7 @@ void StartInitTask(void const * argument)
     osDelay(200);
     LED3_OFF;
     osDelay(200);
+    HAL_IWDG_Refresh(&hiwdg);
   }
   /* USER CODE END 5 */ 
 }

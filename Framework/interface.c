@@ -74,6 +74,8 @@ UartOpFunc_t UartOpFunc[NUM_UARTCHANNEL];
 uint8_t RTU_CHN_ENABLE[NUM_UARTCHANNEL] = RTU_ENABLE_LIST;
 
 uint16_t CurrentData[10];
+uint16_t VoltageData[10];
+
 
 struct RTU_ReqBlock RTU_Req_ReadCurrent_Thres= //RTUÊý¾ÝÇëÇó¿é,¶ÁÈ¡µ±Ç°µç»úÔËÐÐ¹¦ÂÊ
 {
@@ -86,6 +88,19 @@ struct RTU_ReqBlock RTU_Req_ReadCurrent_Thres= //RTUÊý¾ÝÇëÇó¿é,¶ÁÈ�
 	0x0000,                                     //操作寄存器地址
 	0x01,                                       //操作寄存器数量
 	(uint16_t*)&CurrentData[0]      	//执行的数据，读取的寄存器数据或写操作的数据
+};
+
+struct RTU_ReqBlock RTU_Req_ReadVoltage_Thres= //RTUÊý¾ÝÇëÇó¿é,¶ÁÈ¡µ±Ç°µç»úÔËÐÐ¹¦ÂÊ
+{
+	LIST_HEAD_INIT(RTU_Req_ReadVoltage_Thres.Entry),
+  0,                                          //执行次数�?-无限�?
+	UART_CHN_AD_SAMPLE,                      	//执行通道
+	0x01,                                       //从节点站地址
+	FUNC_RD_HOLDREG,                            //功能�?3
+	EXCUTE_SUCCESS,                             //执行结果,用于�?
+	0x0005,                                     //操作寄存器地址
+	0x01,                                       //操作寄存器数�?
+	(uint16_t*)&VoltageData[0]      	//执行的数据，读取的寄存器数据或写操作的数�?
 };
 
 
@@ -104,7 +119,8 @@ void Platform_Init(void)
   UartOpFunc[USART_3]._send = USART3_Send_Data;
   UartOpFunc[UART_5]._send = UART5_Send_Data;
   UartOpFunc[USART_6]._send = USART6_Send_Data;
-  RTU_AddReqBlock(&rtu_ctx[UART_CHN_POWER_CTRL],&RTU_Req_ReadCurrent_Thres);
+  RTU_AddReqBlock(&rtu_ctx[RTU_Req_ReadCurrent_Thres.chnindex],&RTU_Req_ReadCurrent_Thres);
+	RTU_AddReqBlock(&rtu_ctx[RTU_Req_ReadVoltage_Thres.chnindex],&RTU_Req_ReadVoltage_Thres);
 }
 
 
