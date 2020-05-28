@@ -7,6 +7,7 @@
 *.obj
 *.elf
 *.crf
+*.lst
 
 # Linker output
 *.ilk
@@ -53,4 +54,5 @@ Mkfile.old
 dkms.conf
 JLinkLog.txt
 *.bak
+*.vscode/
 
