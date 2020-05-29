@@ -702,6 +702,7 @@ void SPI_ReadByte(uint8_t *buf, uint8_t size)
 void StartInitTask(void const * argument)
 {
   /* USER CODE BEGIN 5 */
+  
 	HAL_TIM_Base_Start_IT(&htim2);//开启定时器中断
 	HAL_UART_Receive_IT(&huart1,(uint8_t *)&UartRecv[USART_1],1);//开启串口接收中断
 	HAL_UART_Receive_IT(&huart2,(uint8_t *)&UartRecv[USART_2],1);//开启串口接收中断
@@ -709,6 +710,7 @@ void StartInitTask(void const * argument)
 	HAL_UART_Receive_IT(&huart5,(uint8_t *)&UartRecv[UART_5],1);//开启串口接收中断
 	HAL_UART_Receive_IT(&huart6,(uint8_t *)&UartRecv[USART_6],1);//开启串口接收中断
 	FM_Usart_Init();
+  Platform_Init();
   /* Infinite loop */
   for(;;)
   {
@@ -731,7 +733,7 @@ void StartInitTask(void const * argument)
 void Task_ModbusMasterPoll(void const * argument)
 {
   /* USER CODE BEGIN Task_ModbusMasterPoll */
-  Platform_Init();
+  
   /* Infinite loop */
   for(;;)
   {

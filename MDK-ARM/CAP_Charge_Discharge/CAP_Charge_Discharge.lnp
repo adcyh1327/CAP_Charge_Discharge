@@ -36,6 +36,8 @@
 "cap_charge_discharge\fm_uart.o"
 "cap_charge_discharge\interface.o"
 "cap_charge_discharge\task_mb_rtu_master.o"
+"cap_charge_discharge\task_hf_sampleboard.o"
+"cap_charge_discharge\task_dcpower.o"
 --library_type=microlib --strict --scatter "CAP_Charge_Discharge\CAP_Charge_Discharge.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

@@ -602,6 +602,16 @@
               <FileType>1</FileType>
               <FilePath>..\Application\Task_MB_RTU_Master.c</FilePath>
             </File>
+            <File>
+              <FileName>Task_HF_SampleBoard.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\Task_HF_SampleBoard.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_DCPower.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\Task_DCPower.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

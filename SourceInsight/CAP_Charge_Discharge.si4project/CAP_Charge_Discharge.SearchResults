@@ -1,3 +1,4 @@
----- RTU_Timer1ms_Handler Matches (2 in 2 files) ----
-Task_MB_RTU_Master.c (Application) line 203 : void RTU_Timer1ms_Handler(void)
-Task_MB_RTU_Master.h (Application) line 126 : void RTU_Timer1ms_Handler(void);
+---- BSP_RTU_StartSend Matches (3 in 1 files) ----
+Task_MB_RTU_Master.c (Application) line 120 : static void BSP_RTU_StartSend(struct RTU_Ctx* _rturtx)
+RTU_Read in Task_MB_RTU_Master.c (Application) :     BSP_RTU_StartSend(_rtuctx);
+RTU_Write in Task_MB_RTU_Master.c (Application) :     BSP_RTU_StartSend(_rtuctx);

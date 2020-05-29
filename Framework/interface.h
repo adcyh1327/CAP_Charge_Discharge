@@ -66,10 +66,6 @@ struct ProtType_t
 };
 
 
-
-extern const uint8_t auchCRC16_Hi[256];
-extern const uint8_t auchCRC16_Low[256];
-
 typedef struct UartOpFuncTyp
 {
 	void (*_send)  (uint8_t *sendbuf, uint16_t lenth);
@@ -78,14 +74,15 @@ typedef struct UartOpFuncTyp
 extern UartOpFunc_t UartOpFunc[NUM_UARTCHANNEL];
 
 
-extern uint16_t g_u16_TCPIPsendlen;           //tcpip报文发送长度
 
 extern char platform_version[];
 
-uint16_t Get_rtuCrc16(uint8_t *puchMsg,uint16_t usDataLen);
 unsigned char AscToHex(unsigned char aChar);
 unsigned char HexToAsc(unsigned char aHex);
 void Platform_Init(void);
+void Float_To_Array(float data,uint8_t *buf);
+void Array_To_Float(uint8_t *buf,float *data);
+
 
 
 

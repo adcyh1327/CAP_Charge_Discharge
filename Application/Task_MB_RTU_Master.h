@@ -116,6 +116,7 @@ struct RTU_Ctx {
 };
 extern struct RTU_Ctx rtu_ctx[NUM_UARTCHANNEL];
 
+uint16_t Get_rtuCrc16(uint8_t *puchMsg,uint16_t usDataLen);
 void RTU_Init(uint8_t chn);
 void RTU_AddReqBlock_Front(struct RTU_Ctx* _rtuctx, struct RTU_ReqBlock* _req);
 void RTU_AddReqBlock(struct RTU_Ctx* _rtuctx, struct RTU_ReqBlock* _req);
