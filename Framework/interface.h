@@ -83,6 +83,21 @@ void Platform_Init(void);
 void Float_To_Array(float data,uint8_t *buf);
 void Array_To_Float(uint8_t *buf,float *data);
 
+uint8_t Read_DC_Power_Setting_Voltage(uint16_t* Voltage);
+void Write_DC_Power_Setting_Voltage(uint16_t Voltage);
+uint8_t Read_DC_Power_Setting_Current(uint16_t* Current);
+void Write_DC_Power_Setting_Current(uint16_t Current);
+uint8_t Read_DC_Power_Setting_OutputStatus(uint16_t* OutputStatus);
+void Write_DC_Power_Setting_OutputStatus(uint16_t OutputStatus);
+uint8_t Read_DC_Power_Setting_RunMode(uint16_t* RunMode);
+void Write_DC_Power_Setting_RunMode(uint16_t RunMode);
+uint8_t Read_DC_Power_Setting_PowerReset(uint16_t* PowerReset);
+void Write_DC_Power_Setting_PowerReset(uint16_t PowerReset);
+uint8_t Read_DC_Power_Setting_PowerCtrlMode(uint16_t* PowerCtrlMode);
+void Write_DC_Power_Setting_PowerCtrlMode(uint16_t PowerCtrlMode);
+
+
+
 
 
 

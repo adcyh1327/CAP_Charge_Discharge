@@ -86,6 +86,7 @@ void Error_Handler(void);
 #define I2C_SCL_GPIO_Port GPIOD
 #define INPUT_4_Pin GPIO_PIN_12
 #define INPUT_4_GPIO_Port GPIOD
+#define INPUT_4_EXTI_IRQn EXTI15_10_IRQn
 #define INPUT_3_Pin GPIO_PIN_13
 #define INPUT_3_GPIO_Port GPIOD
 #define INPUT_2_Pin GPIO_PIN_14

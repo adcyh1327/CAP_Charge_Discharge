@@ -212,7 +212,6 @@ static void BSP_RTU_StartSend(struct RTU_Ctx* _rturtx)
 /********************************************************************************/
 void RTU_Init(uint8_t chn)
 {//模块初始化
-	uint8_t i;
 	//memset(&rtu_ctx, 0, sizeof(rtu_ctx));
 	rtu_ctx[chn].fsm_state = RTU_REQ;//初始化成请求模式
 	rtu_ctx[chn].guard_time = Time_Parameter[chn].timerout;//请求的最大允许响应时间，否则为超时

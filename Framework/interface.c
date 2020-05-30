@@ -13,8 +13,167 @@ const  uint32_t   APPL_CRC __attribute__((at(APP_CRC_ADDR)))={0xA1A2A3A4};
 UartOpFunc_t UartOpFunc[NUM_UARTCHANNEL];
 uint8_t RTU_CHN_ENABLE[NUM_UARTCHANNEL] = RTU_ENABLE_LIST;
 
-uint16_t CurrentData[10];
-uint16_t VoltageData[10];
+typedef struct 
+{
+  uint8_t set_en;
+  uint16_t  set_value;
+}SetValueType;
+
+struct DC_Power_Data_t
+{
+  SetValueType SetVoltage;        //电压设置
+  SetValueType SetCurrent;        //电流设置
+  SetValueType SetOutSts;         //输出状态设置
+  SetValueType SetRunMode;        //电源运行模式
+  SetValueType SetPowerReset;     //电源复位
+  SetValueType SetPowerCtrlMode;  //电源远端或本地控制
+};
+static struct DC_Power_Data_t DC_Power_Data;
+
+//读取设置输出电压值
+//参数值：存储当前读回的电压值
+//返回值：有设置请求时为TRUE，否则为FALSE
+uint8_t Read_DC_Power_Setting_Voltage(uint16_t* Voltage)
+{
+  uint8_t ret=FALSE;
+  if(DC_Power_Data.SetVoltage.set_en == ON)
+  {
+    ret = TRUE;
+    DC_Power_Data.SetVoltage.set_en = OFF;
+  }
+  *Voltage = DC_Power_Data.SetVoltage.set_value;
+  return ret;
+}
+
+//设置输出电压值
+//参数值：设置电压值
+//返回值：void
+void Write_DC_Power_Setting_Voltage(uint16_t Voltage)
+{
+  DC_Power_Data.SetVoltage.set_value = Voltage;
+  DC_Power_Data.SetVoltage.set_en = ON;
+}
+
+//读取设置输出电流值
+//参数值：存储当前读回的电流值
+//返回值：有设置的请求时为TRUE，否则为FALSE
+uint8_t Read_DC_Power_Setting_Current(uint16_t* Current)
+{
+  uint8_t ret=FALSE;
+  if(DC_Power_Data.SetCurrent.set_en == ON)
+  {
+    ret = TRUE;
+    DC_Power_Data.SetCurrent.set_en = OFF;
+  }
+  *Current = DC_Power_Data.SetCurrent.set_value;
+  return ret;
+}
+
+//设置输出电流值
+//参数值：设置电流值
+//返回值：void
+void Write_DC_Power_Setting_Current(uint16_t Current)
+{
+  DC_Power_Data.SetCurrent.set_value = Current;
+  DC_Power_Data.SetCurrent.set_en = ON;
+}
+
+//读取设置输出状态设置,0x00为待机状态，0x01为输出状态
+//参数值：存储当前读回的输出状态设置
+//返回值：有设置请求时为TRUE，否则为FALSE
+uint8_t Read_DC_Power_Setting_OutputStatus(uint16_t* OutputStatus)
+{
+  uint8_t ret=FALSE;
+  if(DC_Power_Data.SetOutSts.set_en == ON)
+  {
+    ret = TRUE;
+    DC_Power_Data.SetOutSts.set_en = OFF;
+  }
+  *OutputStatus = DC_Power_Data.SetOutSts.set_value;
+  return ret;
+}
+
+//设置输出状态设置
+//参数值：输出状态设置
+//返回值：void
+void Write_DC_Power_Setting_OutputStatuse(uint16_t OutputStatus)
+{
+  DC_Power_Data.SetOutSts.set_value = OutputStatus;
+  DC_Power_Data.SetOutSts.set_en = ON;
+}
+
+//读取设置电源运行模式
+//参数值：存储当前读回的电源运行模式
+//返回值：有设置请求时为TRUE，否则为FALSE
+uint8_t Read_DC_Power_Setting_RunMode(uint16_t* RunMode)
+{
+  uint8_t ret=FALSE;
+  if(DC_Power_Data.SetRunMode.set_en == ON)
+  {
+    ret = TRUE;
+    DC_Power_Data.SetRunMode.set_en = OFF;
+  }
+  *RunMode = DC_Power_Data.SetRunMode.set_value;
+  return ret;
+}
+
+//设置电源运行模式
+//参数值：设置电源运行模式
+//返回值：void
+void Write_DC_Power_Setting_RunMode(uint16_t RunMode)
+{
+  DC_Power_Data.SetRunMode.set_value = RunMode;
+  DC_Power_Data.SetRunMode.set_en = ON;
+}
+
+//读取电源复位请求
+//参数值：存储当前读回的电源复位请求
+//返回值：有设置请求时为TRUE，否则为FALSE
+uint8_t Read_DC_Power_Setting_PowerReset(uint16_t* PowerReset)
+{
+  uint8_t ret=FALSE;
+  if(DC_Power_Data.SetPowerReset.set_en == ON)
+  {
+    ret = TRUE;
+    DC_Power_Data.SetPowerReset.set_en = OFF;
+  }
+  *PowerReset = DC_Power_Data.SetPowerReset.set_value;
+  return ret;
+}
+
+//设置电源复位请求
+//参数值：设置电源复位请求
+//返回值：void
+void Write_DC_Power_Setting_PowerReset(uint16_t PowerReset)
+{
+  DC_Power_Data.SetPowerReset.set_value = PowerReset;
+  DC_Power_Data.SetPowerReset.set_en = ON;
+}
+
+//读取设置电源控制模式
+//参数值：存储当前读回的电源控制模式
+//返回值：有设置请求时为TRUE，否则为FALSE
+uint8_t Read_DC_Power_Setting_PowerCtrlMode(uint16_t* PowerCtrlMode)
+{
+  uint8_t ret=FALSE;
+  if(DC_Power_Data.SetPowerCtrlMode.set_en == ON)
+  {
+    ret = TRUE;
+    DC_Power_Data.SetPowerCtrlMode.set_en = OFF;
+  }
+  *PowerCtrlMode = DC_Power_Data.SetPowerCtrlMode.set_value;
+  return ret;
+}
+
+//设置电源控制模式
+//参数值：设置电源控制模式
+//返回值：void
+void Write_DC_Power_Setting_PowerCtrlMode(uint16_t PowerCtrlMode)
+{
+  DC_Power_Data.SetPowerCtrlMode.set_value = PowerCtrlMode;
+  DC_Power_Data.SetPowerCtrlMode.set_en = ON;
+}
+
 
 
 void Platform_Init(void)

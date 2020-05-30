@@ -3,6 +3,8 @@
 #include "interface.h"
 #include "string.h"
 #include "Task_HF_SampleBoard.h"
+#include "Task_MB_RTU_Master.h"
+
 
 
 struct data

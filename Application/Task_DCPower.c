@@ -120,6 +120,20 @@ void DC_POWER_Init(void)
   RTU_AddReqBlock(&rtu_ctx[RTU_Req_Read_DC_OutputStatus.chnindex],&RTU_Req_Read_DC_OutputStatus);
 }
 
+//输出电压值
+//参数值：存储当前读回的电压值
+//返回值：主板和电源通讯正常则为TRUE，否则为FALSE
+uint8_t Read_DC_Power_Output_Voltage(uint16_t* Voltage)
+{
+  uint8_t ret=FALSE;
+  if(RTU_Req_Read_DC_OutputStatus.Status == EXCUTE_SUCCESS)
+  {
+    ret = TRUE;
+  }
+  *Voltage = DC_OutputStatus[off_PowerStatus];
+  return ret;
+}
+
 /********************************************************************************/
 /*函数名：  Task_MBRTU_Master                                                       */
 /*功能说明：RTU master主task, 分时调用，减少CPU load                                         */
@@ -128,9 +142,49 @@ void DC_POWER_Init(void)
 /*******************************************************************************/
 void DC_POWER_MainFunction(void *p_arg)
 {
-  if(RTU_Req_Read_DC_OutputStatus.Status == EXCUTE_SUCCESS)
+  uint8_t ret = FALSE;
+  uint16_t read_val=0;
+  
+  ret = Read_DC_Power_Setting_Voltage(&read_val);
+  if(ret == TRUE)
   {
+    DC_SettingValue[off_SetVoltage] = read_val;
+    RTU_AddReqBlock(&rtu_ctx[RTU_Req_Setting_Voltage.chnindex],&RTU_Req_Setting_Voltage);
+  }
 
+  ret = Read_DC_Power_Setting_Current(&read_val);
+  if(ret == TRUE)
+  {
+    DC_SettingValue[off_SetCurrent] = read_val;
+    RTU_AddReqBlock(&rtu_ctx[RTU_Req_Setting_Current.chnindex],&RTU_Req_Setting_Current);
+  }
+
+  ret = Read_DC_Power_Setting_OutputStatus(&read_val);
+  if(ret == TRUE)
+  {
+    DC_SettingValue[off_SetOutSts] = read_val;
+    RTU_AddReqBlock(&rtu_ctx[RTU_Req_Setting_OutStatus.chnindex],&RTU_Req_Setting_OutStatus);
+  }
+
+  ret = Read_DC_Power_Setting_RunMode(&read_val);
+  if(ret == TRUE)
+  {
+    DC_SettingValue[off_SetRunMode] = read_val;
+    RTU_AddReqBlock(&rtu_ctx[RTU_Req_Setting_RunMode.chnindex],&RTU_Req_Setting_RunMode);
+  }
+
+  ret = Read_DC_Power_Setting_PowerReset(&read_val);
+  if(ret == TRUE)
+  {
+    DC_SettingValue[off_SetPowerReset] = read_val;
+    RTU_AddReqBlock(&rtu_ctx[RTU_Req_Setting_PowerReset.chnindex],&RTU_Req_Setting_PowerReset);
+  }
+
+  ret = Read_DC_Power_Setting_PowerCtrlMode(&read_val);
+  if(ret == TRUE)
+  {
+    DC_SettingValue[off_SetPowerCtrlMode] = read_val;
+    RTU_AddReqBlock(&rtu_ctx[RTU_Req_Setting_PowerCtrlMode.chnindex],&RTU_Req_Setting_PowerCtrlMode);
   }
 }
 
