@@ -1,4 +1,3 @@
----- BSP_RTU_StartSend Matches (3 in 1 files) ----
-Task_MB_RTU_Master.c (Application) line 120 : static void BSP_RTU_StartSend(struct RTU_Ctx* _rturtx)
-RTU_Read in Task_MB_RTU_Master.c (Application) :     BSP_RTU_StartSend(_rtuctx);
-RTU_Write in Task_MB_RTU_Master.c (Application) :     BSP_RTU_StartSend(_rtuctx);
+---- que Matches (2 in 0 files) ----
+FreeRTOSConfig.h (Core\Inc) line 67 : #define configQUEUE_REGISTRY_SIZE                8
+FreeRTOSConfig.h (Core\Inc) line 77 : #define configTIMER_QUEUE_LENGTH                 10

@@ -12,6 +12,8 @@ const  uint32_t   APPL_CRC __attribute__((at(APP_CRC_ADDR)))={0xA1A2A3A4};
                
 UartOpFunc_t UartOpFunc[NUM_UARTCHANNEL];
 uint8_t RTU_CHN_ENABLE[NUM_UARTCHANNEL] = RTU_ENABLE_LIST;
+xQueueHandle Que_UartID[NUM_UARTCHANNEL];//用于传递串口数据给各个task
+
 
 typedef struct 
 {
@@ -185,6 +187,11 @@ void Platform_Init(void)
 			{
 					RTU_Init(i);//RTU初始化，参数为通道号
 			}
+      Que_UartID[i] =xQueueCreate( 10, sizeof(USARTCHN_Recv_t ) );
+      if( Que_UartID[i] == 0)
+      {
+        // 创建队列失败
+      }
 	}
   UartOpFunc[USART_1]._send = USART1_Send_Data;
   UartOpFunc[USART_2]._send = USART2_Send_Data;
@@ -192,6 +199,37 @@ void Platform_Init(void)
   UartOpFunc[UART_5]._send = UART5_Send_Data;
   UartOpFunc[USART_6]._send = USART6_Send_Data;
 }
+
+void Spi5541_WriteOneByte(uint16_t val)
+{        
+    uint8_t BitCount = 0;  
+    uint8_t byte[2];
+    uint8_t i;
+    byte[0] = (val>>8) & 0xff;
+    byte[1] = val & 0xff;
+    MAX5541_CS_ENABLE();
+    for(i=0;i<2;i++)
+    {
+      MAX5541_SCLK_L();          //clk低电平 存入数据，上升沿读入数据  
+      for(BitCount = 0;BitCount < 8; BitCount++)  
+      {  
+          MAX5541_SCLK_L();          //clk低电平 存入数据，上升沿写入数据
+          if(byte[i] & 0x80)  
+          {  
+              MAX5541_MOSI_H();          //MOSI为1,输写入1
+          }  
+          else  
+          {  
+              MAX5541_MOSI_L();  
+          }    
+          MAX5541_SCLK_H();            //时钟高电平，写入数据
+          byte[i] <<= 1;
+      }  
+    }
+    MAX5541_SCLK_L();  
+    MAX5541_MOSI_H();                //写入完成,MOSI保持高电平
+    MAX5541_CS_DISABLE();
+}  
 
 
 uint8_t Check_XOR(uint8_t *data,uint8_t lenth)//异或校验

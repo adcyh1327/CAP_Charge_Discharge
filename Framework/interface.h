@@ -2,7 +2,7 @@
 #define __INTERFACE_H_
 
 #include "config.h"
-
+#include "cmsis_os.h"
 
 
 struct UART_Conf_Data {
@@ -62,7 +62,7 @@ struct ProtType_t
     Tdef_Prot FrameEndInfo; //最高位表示是否使能，低4位表示字节数，只有使能了字节数才有效
     uint8_t FrameEnd[8];         //帧结束符字节数
     uint8_t checksum;          //校验(0-无，1-和，2-crc16)
-    uint8_t inteval;           //字符间隔时间，单位100us
+    uint8_t timeoout_100us;    //字符间隔时间，单位100us
 };
 
 
@@ -72,7 +72,7 @@ typedef struct UartOpFuncTyp
 	void (*_recv)  (uint8_t channel, uint8_t data);
 }UartOpFunc_t;
 extern UartOpFunc_t UartOpFunc[NUM_UARTCHANNEL];
-
+extern xQueueHandle Que_UartID[NUM_UARTCHANNEL];//用于传递串口数据给各个task;
 
 
 extern char platform_version[];
@@ -80,6 +80,7 @@ extern char platform_version[];
 unsigned char AscToHex(unsigned char aChar);
 unsigned char HexToAsc(unsigned char aHex);
 void Platform_Init(void);
+void Spi5541_WriteOneByte(uint16_t byte);
 void Float_To_Array(float data,uint8_t *buf);
 void Array_To_Float(uint8_t *buf,float *data);
 

@@ -75,7 +75,7 @@ enum STATUS_EVENT_t
 	EV_NONE,EV_REQ,EV_TO,EV_RX_OK,EV_RX_CRC_ERR
 };
 
-enum PPI_FSM {
+enum RTU_FSM {
     FSM_REQ,
     FSM_WAIT_ACK,
     FSM_FETCH,

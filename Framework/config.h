@@ -25,6 +25,16 @@ enum USART_CHN{//串口通道
   { if(n==1) {HAL_GPIO_WritePin(LED3_GPIO_Port,LED3_Pin,GPIO_PIN_RESET);} \
     else{HAL_GPIO_WritePin(LED3_GPIO_Port,LED3_Pin,GPIO_PIN_SET);}
 
+    
+
+//MAX5541
+#define MAX5541_SCLK_L()                HAL_GPIO_WritePin(CLK_5541_GPIO_Port,CLK_5541_Pin,GPIO_PIN_RESET)
+#define MAX5541_SCLK_H()                HAL_GPIO_WritePin(CLK_5541_GPIO_Port,CLK_5541_Pin,GPIO_PIN_SET)
+#define MAX5541_MOSI_H()                HAL_GPIO_WritePin(DIN_5541_GPIO_Port,DIN_5541_Pin,GPIO_PIN_RESET)
+#define MAX5541_MOSI_L()                HAL_GPIO_WritePin(DIN_5541_GPIO_Port,DIN_5541_Pin,GPIO_PIN_SET)
+#define MAX5541_CS_ENABLE()             HAL_GPIO_WritePin(CS1_5541_GPIO_Port,CS1_5541_Pin,GPIO_PIN_RESET)
+#define MAX5541_CS_DISABLE()            HAL_GPIO_WritePin(CS1_5541_GPIO_Port,CS1_5541_Pin,GPIO_PIN_SET)
+
 
 //输入信号
 #define READ_ENABLE_STATUS              HAL_GPIO_ReadPin(INPUT_1_GPIO_Port,INPUT_1_Pin) //使能信号
@@ -53,17 +63,17 @@ enum USART_CHN{//串口通道
 
 
 //RTU通道配置
-#define UART_CHN_LCD_DISPLAY       						USART_3     //7 inch显示屏通讯通道
 #define UART_CHN_POWER_CTRL               		UART_5      //直流电源通讯通道
 
 //自定义协议
+#define UART_CHN_LCD_DISPLAY       						USART_3     //7 inch显示屏通讯通道
 #define UART_CHN_AD_SAMPLE               			USART_6     //高频采样板通讯通道
 #define UART_CHN_PC_COMM               			  USART_1     //上位机通讯通道
 
 
 #define RTU_ENABLE_LIST \
 {\
-    FALSE,FALSE,TRUE,TRUE,FALSE \
+    FALSE,FALSE,FALSE,TRUE,FALSE \
 }//UART1 UART2 UART3 UART5 UART6
 
 
