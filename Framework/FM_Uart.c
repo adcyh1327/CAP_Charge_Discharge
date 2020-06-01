@@ -50,12 +50,12 @@ Interface_Info UsartCHN_Cfg=
   },
   .UsartProt[USART_3]=
   {
-      .FrameStartInfo = 0,//FrameStartEn|byte_1,  //本配置为0时则为无协议，所有数据均为有效数据，当字节间时间超过配置时间后认为是完整一帧
-      .FrameStart = {0x02},
+      .FrameStartInfo = FrameStartEn|byte_2,  //本配置为0时则为无协议，所有数据均为有效数据，当字节间时间超过配置时间后认为是完整一帧
+      .FrameStart = {0x5A,0xA5},
       .FrameEndInfo = 0,//FrameStartEn|byte_2,//同帧头配置类似，前边的宏使能才表示有帧尾，后边一个为字节数量
       .FrameEnd = {0x0d,0x0a,},
       .checksum = CheckSum_None,//当前是0,根据实际需要可能要更改
-      .timeoout_100us = 10//单位100us,串口帧传输过程中字节间时间的最大允许间隔
+      .timeoout_100us = 5//单位100us,串口帧传输过程中字节间时间的最大允许间隔
   },
   .UsartProt[UART_5]=
   {
