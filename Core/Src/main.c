@@ -26,6 +26,14 @@
 /* USER CODE BEGIN Includes */
 #include "FM_Uart.h"
 #include "Task_MB_RTU_Master.h"
+#include "Task_APPLogic.h"
+#include "Task_DCPower.h"
+#include "Task_HF_SampleBoard.h"
+#include "Task_LCD_Display.h"
+#include "Task_PC_Comm.h"
+
+
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -63,8 +71,6 @@ DMA_HandleTypeDef hdma_usart6_tx;
 osThreadId InitTaskHandle;
 osThreadId ModbusMasterPolHandle;
 osThreadId UartHandleHandle;
-osMessageQId Que_UartLCDHandle;
-osMessageQId Que_UartExtDevHandle;
 osSemaphoreId BinarySem_rtuHandle;
 /* USER CODE BEGIN PV */
 uint8_t UartRecv[NUM_UARTCHANNEL];
@@ -153,15 +159,6 @@ int main(void)
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
-
-  /* Create the queue(s) */
-  /* definition and creation of Que_UartLCD */
-  osMessageQDef(Que_UartLCD, 32, uint8_t);
-  Que_UartLCDHandle = osMessageCreate(osMessageQ(Que_UartLCD), NULL);
-
-  /* definition and creation of Que_UartExtDev */
-  osMessageQDef(Que_UartExtDev, 8, uint8_t);
-  Que_UartExtDevHandle = osMessageCreate(osMessageQ(Que_UartExtDev), NULL);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -738,6 +735,9 @@ void Task_ModbusMasterPoll(void const * argument)
   for(;;)
   {
     MBRTU_Master_MainFunction((void *)argument);
+    PC_Comm_MainFunction((void *)argument);
+    LCD_Display_MainFunction((void *)argument);
+    
     osDelay(1);
   }
   /* USER CODE END Task_ModbusMasterPoll */
@@ -753,10 +753,11 @@ void Task_ModbusMasterPoll(void const * argument)
 void Task_UartHandle(void const * argument)
 {
   /* USER CODE BEGIN Task_UartHandle */
+  FM_Usart_Init();
   /* Infinite loop */
   for(;;)
   {
-    FM_Usart_Init();
+    FM_Usart_Mainfunction((void *)argument);
     osDelay(1);
   }
   /* USER CODE END Task_UartHandle */
@@ -773,7 +774,7 @@ void Task_UartHandle(void const * argument)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
-static uint16_t cnt =0;
+  static uint16_t cnt =0;
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM14) {
     HAL_IncTick();

@@ -19,15 +19,65 @@ extern UART_HandleTypeDef huart2;
 extern UART_HandleTypeDef huart3;
 extern UART_HandleTypeDef huart6;
 
-static osMessageQId* Que_UartID[NUM_UARTCHANNEL] = {&Que_UartLCDHandle,&Que_UartExtDevHandle};
+
 static uint16_t g_u16_SCISingalFrameRecTime[NUM_UARTCHANNEL];             //串口单帧数据接收时间计时，单位ms
 static uint16_t g_u16_Message_Length[NUM_UARTCHANNEL];                     //当前已接收到的数据个数
 static uint8_t l_u8_Receive_Buffer[NUM_UARTCHANNEL][SCI_BUF_MAXLEN];          //用于保存串口接收到的数据
 static uint16_t byteidx_faramend[NUM_UARTCHANNEL];//帧结束的字节序号
 static uint16_t l_DMA_SendTime[NUM_UARTCHANNEL];
+static USARTCHN_Recv_t USARTCHN_RecvBuff[NUM_UARTCHANNEL];//串口或CAN的接收备份缓冲区，识别到有效帧后存取，可直接拷贝至以太网缓冲区
+//static xQueueHandle Que_CopyData;//请求copy缓冲区数据
 
-static USARTCHN_Recv_t USARTCHN_Recv[NUM_UARTCHANNEL];//串口或CAN的接收备份缓冲区，识别到有效帧后存取，可直接拷贝至以太网缓冲区
-Interface_Info UsartCHN_Data;//
+Interface_Info UsartCHN_Cfg=
+{
+  .UsartProt[USART_1]=
+  {
+      .FrameStartInfo = 0,//FrameStartEn|byte_1,  //本配置为0时则为无协议，所有数据均为有效数据，当字节间时间超过配置时间后认为是完整一帧
+      .FrameStart = {0x02},
+      .FrameEndInfo = 0,//FrameStartEn|byte_2,//同帧头配置类似，前边的宏使能才表示有帧尾，后边一个为字节数量
+      .FrameEnd = {0x0d,0x0a,},
+      .checksum = CheckSum_None,//当前是0,根据实际需要可能要更改
+      .timeoout_100us = 100//单位100us,串口帧传输过程中字节间时间的最大允许间隔
+  },
+  .UsartProt[USART_2]=
+  {
+      .FrameStartInfo = 0,//FrameStartEn|byte_1,  //本配置为0时则为无协议，所有数据均为有效数据，当字节间时间超过配置时间后认为是完整一帧
+      .FrameStart = {0x02},
+      .FrameEndInfo = 0,//FrameStartEn|byte_2,//同帧头配置类似，前边的宏使能才表示有帧尾，后边一个为字节数量
+      .FrameEnd = {0x0d,0x0a,},
+      .checksum = CheckSum_None,//当前是0,根据实际需要可能要更改
+      .timeoout_100us = 100//单位100us,串口帧传输过程中字节间时间的最大允许间隔
+  },
+  .UsartProt[USART_3]=
+  {
+      .FrameStartInfo = FrameStartEn|byte_2,  //本配置为0时则为无协议，所有数据均为有效数据，当字节间时间超过配置时间后认为是完整一帧
+      .FrameStart = {0x5A,0xA5},
+      .FrameEndInfo = 0,//FrameStartEn|byte_2,//同帧头配置类似，前边的宏使能才表示有帧尾，后边一个为字节数量
+      .FrameEnd = {0x0d,0x0a,},
+      .checksum = CheckSum_None,//当前是0,根据实际需要可能要更改
+      .timeoout_100us = 5//单位100us,串口帧传输过程中字节间时间的最大允许间隔
+  },
+  .UsartProt[UART_5]=
+  {
+      .FrameStartInfo = 0,//FrameStartEn|byte_1,  //本配置为0时则为无协议，所有数据均为有效数据，当字节间时间超过配置时间后认为是完整一帧
+      .FrameStart = {0x02},
+      .FrameEndInfo = 0,//FrameStartEn|byte_2,//同帧头配置类似，前边的宏使能才表示有帧尾，后边一个为字节数量
+      .FrameEnd = {0x0d,0x0a,},
+      .checksum = CheckSum_None,//当前是0,根据实际需要可能要更改
+      .timeoout_100us = 100//单位100us,串口帧传输过程中字节间时间的最大允许间隔
+  },
+  .UsartProt[USART_6]=
+  {
+      .FrameStartInfo = 0,//FrameStartEn|byte_1,  //本配置为0时则为无协议，所有数据均为有效数据，当字节间时间超过配置时间后认为是完整一帧
+      .FrameStart = {0x02},
+      .FrameEndInfo = 0,//FrameStartEn|byte_2,//同帧头配置类似，前边的宏使能才表示有帧尾，后边一个为字节数量
+      .FrameEnd = {0x0d,0x0a,},
+      .checksum = CheckSum_None,//当前是0,根据实际需要可能要更改
+      .timeoout_100us = 100//单位100us,串口帧传输过程中字节间时间的最大允许间隔
+  },
+};
+
+
 
 enum Framestatus_t{
   frame_idle=0,frame_head,frame_data,frame_end,frame_chk  
@@ -41,6 +91,7 @@ void USART_Timer100us(void)
 {
     uint8_t channel;
     
+    
 	for(channel=0;channel<NUM_UARTCHANNEL;channel++)
 	{
         if(g_bit_SCI_DMA_Send(channel) == ON)
@@ -49,11 +100,6 @@ void USART_Timer100us(void)
             {
                 g_bit_SCI_DMA_Send(channel) = OFF;
                 l_DMA_SendTime[channel] = 0;
-#if 0
-                DMA_Cmd(DMA1_Channel2, DISABLE);
-                DMA_ClearITPendingBit(DMA1_IT_GL2 | DMA1_IT_TC2 | DMA1_IT_HT2 | DMA1_IT_TE2);
-                USART3_485_RX_ENABLE;
-#endif
             }
             
         }
@@ -68,13 +114,14 @@ void USART_Timer100us(void)
 			{
 				g_u16_SCISingalFrameRecTime[channel]++;
 			}
-            if(g_u16_SCISingalFrameRecTime[channel]>UsartCHN_Data.Usart[channel][tmout])
+            if(g_u16_SCISingalFrameRecTime[channel]>UsartCHN_Cfg.UsartProt[channel].timeoout_100us)
             {
-                if(((UsartCHN_Data.UsartProt[channel].FrameEndInfo.T_byte & FrameEndEn) != FrameEndEn)&&(FrameStatus[channel] == frame_data))
+                if(((UsartCHN_Cfg.UsartProt[channel].FrameEndInfo.T_byte & FrameEndEn) != FrameEndEn)&&(FrameStatus[channel] == frame_data))
                 {
                     //g_u16_SCISingalFrameRecTime[channel]=0;
                     FrameStatus[channel] = frame_idle;
                     CopyRecData(channel);
+                    
                 }
                 else
                 {
@@ -96,34 +143,37 @@ void USART_Timer100us(void)
 void CopyRecData(uint8_t channel)
 {
 	uint8_t *start;
-	if((UsartCHN_Data.UsartProt[channel].FrameStartInfo.T_byte & FrameStartEn) == FrameStartEn)
+  portBASE_TYPE xHigherPriorityTaskWoken;
+	if((UsartCHN_Cfg.UsartProt[channel].FrameStartInfo.T_byte & FrameStartEn) == FrameStartEn)
 	{
-		start = &l_u8_Receive_Buffer[channel][UsartCHN_Data.UsartProt[channel].FrameStartInfo.Bits.btn];
-		USARTCHN_Recv[channel].lenth = g_u16_Message_Length[channel] + 1 -UsartCHN_Data.UsartProt[channel].FrameStartInfo.Bits.btn;
+		start = &l_u8_Receive_Buffer[channel][UsartCHN_Cfg.UsartProt[channel].FrameStartInfo.Bits.btn];
+		USARTCHN_RecvBuff[channel].lenth = g_u16_Message_Length[channel] + 1 -UsartCHN_Cfg.UsartProt[channel].FrameStartInfo.Bits.btn;
 	}
 	else
 	{
 		start = &l_u8_Receive_Buffer[channel][0];
-        USARTCHN_Recv[channel].lenth = g_u16_Message_Length[channel] + 1;
+    USARTCHN_RecvBuff[channel].lenth = g_u16_Message_Length[channel] + 1;
 	}
-	if((UsartCHN_Data.UsartProt[channel].FrameStartInfo.T_byte & FrameEndEn) == FrameEndEn)
+	if((UsartCHN_Cfg.UsartProt[channel].FrameStartInfo.T_byte & FrameEndEn) == FrameEndEn)
 	{
-		USARTCHN_Recv[channel].lenth = USARTCHN_Recv[channel].lenth - UsartCHN_Data.UsartProt[channel].FrameEndInfo.Bits.btn;
+		USARTCHN_RecvBuff[channel].lenth = USARTCHN_RecvBuff[channel].lenth - UsartCHN_Cfg.UsartProt[channel].FrameEndInfo.Bits.btn;
 	}
-	else if(UsartCHN_Data.UsartProt[channel].checksum == ChkSum_And)
+	else if(UsartCHN_Cfg.UsartProt[channel].checksum == ChkSum_And)
 	{
-		USARTCHN_Recv[channel].lenth = USARTCHN_Recv[channel].lenth-2;
+		USARTCHN_RecvBuff[channel].lenth = USARTCHN_RecvBuff[channel].lenth-2;
 	}
 	else
 	{
-		USARTCHN_Recv[channel].lenth = g_u16_Message_Length[channel]+1;
+		USARTCHN_RecvBuff[channel].lenth = g_u16_Message_Length[channel]+1;
 	}
 	//g_u16_SCISingalFrameRecTime[channel]=0;
-    memcpy(USARTCHN_Recv[channel].databuf,start,USARTCHN_Recv[channel].lenth);
+	  memset(USARTCHN_RecvBuff[channel].databuf,0,sizeof(USARTCHN_RecvBuff[channel].databuf));
+    memcpy(USARTCHN_RecvBuff[channel].databuf,start,USARTCHN_RecvBuff[channel].lenth);
     memset(l_u8_Receive_Buffer[channel],0,SCI_BUF_MAXLEN);
-    USARTCHN_Recv[channel].newupd=ON;
-    //OSMboxPost(mBOX_Uart_Recv[channel],(void *)&USARTCHN_Recv[channel].newupd);
-    xQueueSend(*Que_UartID[channel], (const void *)&USARTCHN_Recv[channel] , QUE_WAIT_TIME);
+    //USARTCHN_Recv[channel].newupd=ON;
+    xQueueSendFromISR(Que_UartID[channel], (void *)&USARTCHN_RecvBuff[channel], &xHigherPriorityTaskWoken);
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    //xQueueSend(Que_UartID[channel], (void *)&USARTCHN_RecvBuff[channel], ( portTickType ) 10 );
 }
 
 void UsartRecieveData(uint8_t channel,uint8_t recdata)
@@ -138,16 +188,16 @@ void UsartRecieveData(uint8_t channel,uint8_t recdata)
     
 	if(FrameStatus[channel] == frame_idle)
 	{
-        if(g_u16_SCISingalFrameRecTime[channel]>UsartCHN_Data.Usart[channel][tmout])
+        if(g_u16_SCISingalFrameRecTime[channel]>UsartCHN_Cfg.Usart[channel][tmout])
         {
             g_u16_Message_Length[channel]=0;
-    		if((UsartCHN_Data.UsartProt[channel].FrameStartInfo.T_byte & FrameStartEn) == FrameStartEn)//有帧头
+    		if((UsartCHN_Cfg.UsartProt[channel].FrameStartInfo.T_byte & FrameStartEn) == FrameStartEn)//有帧头
     		{
-    			if(Temp != UsartCHN_Data.UsartProt[channel].FrameStart[g_u16_Message_Length[channel]])
+    			if(Temp != UsartCHN_Cfg.UsartProt[channel].FrameStart[g_u16_Message_Length[channel]])
     			{
     				return;
     			}
-                if(UsartCHN_Data.UsartProt[channel].FrameStartInfo.Bits.btn==byte_1)
+                if(UsartCHN_Cfg.UsartProt[channel].FrameStartInfo.Bits.btn==byte_1)
                 {
                     FrameStatus[channel] = frame_data;
                 }
@@ -166,15 +216,15 @@ void UsartRecieveData(uint8_t channel,uint8_t recdata)
     else if(FrameStatus[channel] == frame_head)
     {
         g_u16_Message_Length[channel]++;
-		l_u8_Receive_Buffer[channel][g_u16_Message_Length[channel]] = Temp;
-        if(Temp != UsartCHN_Data.UsartProt[channel].FrameStart[g_u16_Message_Length[channel]])
+		    l_u8_Receive_Buffer[channel][g_u16_Message_Length[channel]] = Temp;
+        if(Temp != UsartCHN_Cfg.UsartProt[channel].FrameStart[g_u16_Message_Length[channel]])
         {
             FrameStatus[channel] = frame_idle;
             g_u16_SCISingalFrameRecTime[channel]=0;
             g_u16_Message_Length[channel]=0;
             return;
         }
-        if((g_u16_Message_Length[channel]+1) == UsartCHN_Data.UsartProt[channel].FrameStartInfo.Bits.btn)
+        if((g_u16_Message_Length[channel]+1) == UsartCHN_Cfg.UsartProt[channel].FrameStartInfo.Bits.btn)
         {
             FrameStatus[channel] = frame_data;
         }
@@ -183,13 +233,13 @@ void UsartRecieveData(uint8_t channel,uint8_t recdata)
     {
         g_u16_Message_Length[channel]++;
 		    l_u8_Receive_Buffer[channel][g_u16_Message_Length[channel]] = Temp;
-        if((UsartCHN_Data.UsartProt[channel].FrameEndInfo.T_byte & FrameEndEn) == FrameEndEn)
+        if((UsartCHN_Cfg.UsartProt[channel].FrameEndInfo.T_byte & FrameEndEn) == FrameEndEn)
 		    {
-            if(Temp==UsartCHN_Data.UsartProt[channel].FrameEnd[0])
+            if(Temp==UsartCHN_Cfg.UsartProt[channel].FrameEnd[0])
 			{
-                if(UsartCHN_Data.UsartProt[channel].FrameEndInfo.Bits.btn==byte_1)
+                if(UsartCHN_Cfg.UsartProt[channel].FrameEndInfo.Bits.btn==byte_1)
                 {
-                    if(UsartCHN_Data.UsartProt[channel].checksum ==CheckSum_None)
+                    if(UsartCHN_Cfg.UsartProt[channel].checksum ==CheckSum_None)
                     {
                         FrameStatus[channel] = frame_idle;
                         CopyRecData(channel);
@@ -211,14 +261,14 @@ void UsartRecieveData(uint8_t channel,uint8_t recdata)
     {
         g_u16_Message_Length[channel]++;
         l_u8_Receive_Buffer[channel][g_u16_Message_Length[channel]] = Temp;
-        if(Temp!=UsartCHN_Data.UsartProt[channel].FrameEnd[g_u16_Message_Length[channel]-byteidx_faramend[channel]])
+        if(Temp!=UsartCHN_Cfg.UsartProt[channel].FrameEnd[g_u16_Message_Length[channel]-byteidx_faramend[channel]])
         {
             FrameStatus[channel] = frame_data;
             byteidx_faramend[channel]=0;
         }
-        if((g_u16_Message_Length[channel]-byteidx_faramend[channel]+1) == UsartCHN_Data.UsartProt[channel].FrameEndInfo.Bits.btn)
+        if((g_u16_Message_Length[channel]-byteidx_faramend[channel]+1) == UsartCHN_Cfg.UsartProt[channel].FrameEndInfo.Bits.btn)
         {
-            if(UsartCHN_Data.UsartProt[channel].checksum ==CheckSum_None)
+            if(UsartCHN_Cfg.UsartProt[channel].checksum ==CheckSum_None)
             {
                 FrameStatus[channel] = frame_idle;
                 CopyRecData(channel);
@@ -278,5 +328,19 @@ void FM_Usart_Init(void)
 	{
 		g_u16_SCISingalFrameRecTime[i] = 0xfff0;
 	}
+  //Que_CopyData =xQueueCreate( 10, sizeof(USARTCHN_Recv_t ) );
 }
+
+void FM_Usart_Mainfunction(void *p_arg)
+{
+  uint8_t channel;
+  //if( Que_CopyData != 0)    
+  {// 从创建的队列中接收一个消息，如果消息无效，阻塞在此处        
+    //if(xQueueReceive( Que_CopyData, &(channel), ( portTickType ) 10 ) )        
+    {// 现在pcRxedMessage 指向由vATask任务投递进来的结构体Amessage变量        }    }
+     // CopyRecData(channel);
+    }
+	}
+}
+
 
