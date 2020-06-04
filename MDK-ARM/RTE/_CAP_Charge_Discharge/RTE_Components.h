@@ -1,6 +1,6 @@
 
 /*
- * Auto generated Run-Time-Environment Configuration File
+ * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
  * Project: 'CAP_Charge_Discharge' 
@@ -15,7 +15,6 @@
  * Define the Device Header File: 
  */
 #define CMSIS_device_header "stm32f2xx.h"
-
 
 
 #endif /* RTE_COMPONENTS_H */
